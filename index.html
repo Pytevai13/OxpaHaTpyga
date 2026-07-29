@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Электронный уголок охраны труда ПЧ-13</title>
+    <!-- Web App / PWA Meta -->
+    <meta name="theme-color" content="#E21A1A">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Уголок ОТ ПЧ-13">
+    
+    <!-- Favicon / SVG Icon (В стиле РЖД) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23E21A1A'/><path d='M20 70 L50 20 L80 70 Z' fill='none' stroke='white' stroke-width='8' stroke-linejoin='round'/><path d='M35 55 L65 55' stroke='white' stroke-width='8'/><circle cx='50' cy='42' r='6' fill='%23E21A1A'/></svg>">
+    
+    <!-- Web Manifest for PWA (Embedded Data URI) -->
+    <link rel="manifest" href="data:application/manifest+json;base64,ewogICJuYW1lIjogIjA30LvQtdC60YLRgNC%2B0L3QvdGL0Lkg0YPQtdC%2B0LvQvtC6INC%2B0YXRgNCw0L3RiyDRgtGA0YPQtNCwINCf0KctMTMiLAogICJzaG9ydF9uYW1lIjogItCj0LPQvtC70L7QuCDQntCUINCf0KctMTMiLAogICJzdGFydF91cmwiOiAiLiIsCiAgImRpc3BsYXkiOiAic3RhbmRhbG9uZSIsCiAgImJhY2tncm91bmRfY29sb3IiOiAiI2Y4ZmE3YyIsCiAgInRoZW1lX2NvbG9yIjogIiNFMjFBMUEiCiB9">
+
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        rzd: {
+                            red: '#E21A1A',
+                            darkRed: '#B81414',
+                            gray: '#212529',
+                            lightGray: '#F4F5F7',
+                            border: '#D1D5DB'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        /* Дополнительные стили для имитации РЖД полосы */
+        .rzd-top-bar {
+            background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%);
+        }
+        .rzd-card {
+            transition: all 0.2s ease-in-out;
+            border-top: 4px solid #E21A1A;
+        }
+        .rzd-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(226, 26, 26, 0.15);
+        }
+    </style>
+</head>
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased">
+
+    <!-- Шапка сайта -->
+    <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                <!-- Логотип-значок -->
+                <div class="bg-white text-rzd-red p-2 rounded-lg font-bold text-xl shadow">
+                    ПЧ-13
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight md:text-xl">Электронный уголок охраны труда</h1>
+                    <p class="text-xs text-red-100 opacity-90">Структурное подразделение ПЧ-13</p>
+                </div>
+            </div>
+
+            <!-- Кнопка вызова меню (мобильная) -->
+            <button id="menuBtn" class="md:hidden p-2 rounded hover:bg-rzd-darkRed focus:outline-none">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+
+            <!-- Десктопная навигация -->
+            <nav class="hidden md:flex space-x-4 text-sm font-medium">
+                <button onclick="navigateTo('home')" class="hover:text-red-200 transition">Главная</button>
+                <button onclick="navigateTo('first-aid')" class="hover:text-red-200 transition">Первая помощь</button>
+                <button onclick="navigateTo('siz')" class="hover:text-red-200 transition">СИЗ</button>
+                <button onclick="navigateTo('iot')" class="hover:text-red-200 transition">ИОТ</button>
+                <button onclick="navigateTo('schedules')" class="hover:text-red-200 transition">Графики</button>
+            </nav>
+        </div>
+
+        <!-- Мобильное меню -->
+        <div id="mobileMenu" class="hidden md:hidden bg-rzd-darkRed px-4 pt-2 pb-4 space-y-2 border-t border-red-700">
+            <button onclick="navigateTo('home')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Главная</button>
+            <button onclick="navigateTo('first-aid')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Первая помощь</button>
+            <button onclick="navigateTo('siz')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Нормы выдачи СИЗ</button>
+            <button onclick="navigateTo('normative-docs')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Нормативные документы</button>
+            <button onclick="navigateTo('lna')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Приказы и ЛНА</button>
+            <button onclick="navigateTo('iot')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Инструкции по ОТ</button>
+            <button onclick="navigateTo('schedules')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Графики проверки знаний</button>
+        </div>
+    </header>
+
+    <!-- Основной контент (динамический) -->
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6">
+
+        <!-- Хлебные крошки / Кнопка "Назад" -->
+        <div id="breadcrumbs" class="hidden mb-4 items-center space-x-2 text-sm text-gray-600">
+            <button onclick="navigateTo('home')" class="flex items-center text-rzd-red hover:underline font-medium">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На главную
+            </button>
+            <span>/</span>
+            <span id="currentPageTitle" class="text-gray-800 font-semibold"></span>
+        </div>
+
+        <!-- ==================== СТРАНИЦА: ГЛАВНАЯ ==================== -->
+        <section id="page-home" class="page-content space-y-6">
+            <!-- Информационный баннер -->
+            <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-rzd-red flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900">Безопасность — наш главный приоритет</h2>
+                    <p class="text-gray-600 mt-1">Официальный информационный ресурс по охране труда для работников дистанции пути ПЧ-13.</p>
+                </div>
+                <div class="inline-flex items-center px-3 py-1 bg-red-100 text-rzd-red font-semibold text-xs rounded-full">
+                    ПЧ-13 ОАО «РЖД»
+                </div>
+            </div>
+
+            <!-- Главное меню (плитка кликабельных блоков) -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                
+                <!-- Блок 1: Первая помощь -->
+                <div onclick="navigateTo('first-aid')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="heart-pulse" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Оказание первой помощи</h3>
+                        <p class="text-sm text-gray-600">Алгоритмы, инструкции и памятки по оказанию первой помощи при травмах на производстве.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 2: СИЗ -->
+                <div onclick="navigateTo('siz')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="shield-check" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Нормы выдачи СИЗ</h3>
+                        <p class="text-sm text-gray-600">Типовые нормы выдачи спецодежды, спецобуви и других средств индивидуальной защиты.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 3: Нормативные документы -->
+                <div onclick="navigateTo('normative-docs')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="book-open" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Нормативные документы</h3>
+                        <p class="text-sm text-gray-600">Федеральные законы, Правила по охране труда ОАО «РЖД» и стандарты безопасности.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 4: Приказы и ЛНА ПЧ-13 -->
+                <div onclick="navigateTo('lna')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="file-text" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Приказы и ЛНА ПЧ-13</h3>
+                        <p class="text-sm text-gray-600">Внутренние приказы, распоряжения и локальные нормативные акты дистанции пути.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 5: Инструкции по ОТ -->
+                <div onclick="navigateTo('iot')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="clipboard-list" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Инструкции по ОТ</h3>
+                        <p class="text-sm text-gray-600">Действующие инструкции по охране труда для профессий и видов работ ПЧ-13.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 6: Графики проверки знаний -->
+                <div onclick="navigateTo('schedules')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="calendar" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">Графики проверки знаний</h3>
+                        <p class="text-sm text-gray-600">Расписание экзаменов и проверок знаний по охране труда и электробезопасности.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: ПЕРВАЯ ПОМОЩЬ ==================== -->
+        <section id="page-first-aid" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="heart-pulse" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Оказание первой помощи
+                </h2>
+                <div class="space-y-4">
+                    <div class="p-4 bg-red-50 rounded-lg border border-red-200">
+                        <h3 class="font-bold text-rzd-red">Памятка: Последовательность действий при ДТП и Травмах</h3>
+                        <ol class="list-decimal list-inside text-sm mt-2 space-y-1 text-gray-700">
+                            <li>Оценить обстановку и устранить угрожающие факторы.</li>
+                            <li>Вызвать скорую медицинскую помощь или экстренные службы (112).</li>
+                            <li>Определить наличие признаков жизни у пострадавшего.</li>
+                            <li>Выполнить мероприятия по восстановлению и поддержанию жизнедеятельности.</li>
+                        </ol>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="border p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">Электротравмы</h4>
+                            <p class="text-sm text-gray-600">Первоочередное действие — обесточить установку или освободить пострадавшего от действия электрического тока с соблюдением мер личной безопасности.</p>
+                        </div>
+                        <div class="border p-4 rounded-lg">
+                            <h4 class="font-semibold text-gray-800 mb-2">Кровотечения</h4>
+                            <p class="text-sm text-gray-600">Наложение жгута при артериальном кровотечении выше раны с указанием времени наложения. Наложение давящей повязки при венозном.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: СИЗ ==================== -->
+        <section id="page-siz" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="shield-check" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Нормы выдачи СИЗ в ПЧ-13
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b">
+                                <th class="p-3 font-semibold">Профессия / Должность</th>
+                                <th class="p-3 font-semibold">Наименование СИЗ</th>
+                                <th class="p-3 font-semibold">Срок носки (мес.)</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y">
+                            <tr>
+                                <td class="p-3 font-medium">Монтер пути</td>
+                                <td class="p-3">Костюм сигнальный для путейцев, ботинки юфтевые с защитным носком, рукавицы комбинированные</td>
+                                <td class="p-3">12 / До износа</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Заплетальщик каната</td>
+                                <td class="p-3">Костюм защитный, перчатки с полимерным покрытием, очки защитные</td>
+                                <td class="p-3">12</td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">Бригадир (освобожденный) по текущему содержанию</td>
+                                <td class="p-3">Костюм сигнальный 3 класса защиты, каска защитная, плащ для защиты от воды</td>
+                                <td class="p-3">24 / 24 / 36</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: НОРМАТИВНЫЕ ДОКУМЕНТЫ ==================== -->
+        <section id="page-normative-docs" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="book-open" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Общесетевые нормативные документы
+                </h2>
+                <ul class="space-y-3">
+                    <li class="p-3 bg-gray-50 rounded border hover:bg-gray-100 cursor-pointer flex justify-between items-center">
+                        <div>
+                            <span class="font-medium text-gray-800">Трудовой Кодекс РФ (Раздел X. Охрана труда)</span>
+                            <p class="text-xs text-gray-500">Федеральный закон</p>
+                        </div>
+                        <i data-lucide="download" class="w-5 h-5 text-gray-500"></i>
+                    </li>
+                    <li class="p-3 bg-gray-50 rounded border hover:bg-gray-100 cursor-pointer flex justify-between items-center">
+                        <div>
+                            <span class="font-medium text-gray-800">Правила по охране труда при путевых работах и работе в путевом хозяйстве</span>
+                            <p class="text-xs text-gray-500">Распоряжение ОАО «РЖД»</p>
+                        </div>
+                        <i data-lucide="download" class="w-5 h-5 text-gray-500"></i>
+                    </li>
+                    <li class="p-3 bg-gray-50 rounded border hover:bg-gray-100 cursor-pointer flex justify-between items-center">
+                        <div>
+                            <span class="font-medium text-gray-800">СТО РЖД 15.011-2023 Система управления охраной труда</span>
+                            <p class="text-xs text-gray-500">Стандарт ОАО «РЖД»</p>
+                        </div>
+                        <i data-lucide="download" class="w-5 h-5 text-gray-500"></i>
+                    </li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: ЛНА ПЧ-13 ==================== -->
+        <section id="page-lna" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="file-text" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Приказы и локальные акты ПЧ-13
+                </h2>
+                <div class="space-y-3">
+                    <div class="p-4 border-l-4 border-rzd-red bg-gray-50 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Приказ № 102/ПЧ-13</h4>
+                            <p class="text-sm text-gray-600">О назначении ответственных лиц за состояние охраны труда в подразделениях на 2024–2025 гг.</p>
+                        </div>
+                        <span class="text-xs bg-gray-200 px-2 py-1 rounded">PDF</span>
+                    </div>
+                    <div class="p-4 border-l-4 border-rzd-red bg-gray-50 flex justify-between items-center">
+                        <div>
+                            <h4 class="font-semibold text-gray-800">Перечень работ с повышенной опасностью в ПЧ-13</h4>
+                            <p class="text-sm text-gray-600">Утвержден начальником ПЧ-13</p>
+                        </div>
+                        <span class="text-xs bg-gray-200 px-2 py-1 rounded">PDF</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: ИОТ ==================== -->
+        <section id="page-iot" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="clipboard-list" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Инструкции по охране труда (ИОТ)
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="p-4 border rounded hover:border-rzd-red transition cursor-pointer">
+                        <span class="text-xs font-bold text-rzd-red">ИОТ-ПЧ13-001-2023</span>
+                        <h4 class="font-bold text-gray-800 mt-1">Для монтера пути ПЧ-13</h4>
+                        <p class="text-xs text-gray-500 mt-2">Действует до: 2028 г.</p>
+                    </div>
+                    <div class="p-4 border rounded hover:border-rzd-red transition cursor-pointer">
+                        <span class="text-xs font-bold text-rzd-red">ИОТ-ПЧ13-005-2023</span>
+                        <h4 class="font-bold text-gray-800 mt-1">При работе с бензоинструментом</h4>
+                        <p class="text-xs text-gray-500 mt-2">Действует до: 2028 г.</p>
+                    </div>
+                    <div class="p-4 border rounded hover:border-rzd-red transition cursor-pointer">
+                        <span class="text-xs font-bold text-rzd-red">ИОТ-ПЧ13-012-2022</span>
+                        <h4 class="font-bold text-gray-800 mt-1">Для сигналиста ПЧ-13</h4>
+                        <p class="text-xs text-gray-500 mt-2">Действует до: 2027 г.</p>
+                    </div>
+                    <div class="p-4 border rounded hover:border-rzd-red transition cursor-pointer">
+                        <span class="text-xs font-bold text-rzd-red">ИОТ-ПЧ13-018-2024</span>
+                        <h4 class="font-bold text-gray-800 mt-1">При выполнении погрузочно-разгрузочных работ</h4>
+                        <p class="text-xs text-gray-500 mt-2">Действует до: 2029 г.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: ГРАФИКИ ==================== -->
+        <section id="page-schedules" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center">
+                    <i data-lucide="calendar" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Графики проверки знаний
+                </h2>
+                <div class="space-y-6">
+                    <div>
+                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-3">Охрана труда и безопасность движения</h3>
+                        <p class="text-sm text-gray-600 mb-3">Проверка знаний проводится каждый второй и четвертый четверг месяца в кабинете ОТ ПЧ-13 с 09:00.</p>
+                        <div class="bg-gray-50 p-4 rounded text-sm">
+                            <span class="font-semibold">Ближайшая дата:</span> 25-е число текущего месяца
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-gray-800 border-b pb-2 mb-3">Электробезопасность (1-3 группы)</h3>
+                        <p class="text-sm text-gray-600 mb-3">Экзамен для операторов, электромонтеров и лиц, работающих с электроинструментом.</p>
+                        <div class="bg-gray-50 p-4 rounded text-sm">
+                            <span class="font-semibold">Ближайшая дата:</span> 18-е число текущего месяца
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer class="bg-rzd-gray text-white text-xs py-6 mt-auto border-t-4 border-rzd-red">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div>
+                <p class="font-bold text-sm">Структурное подразделение ПЧ-13</p>
+                <p class="text-gray-400 mt-1">Электронный уголок охраны труда © 2024</p>
+            </div>
+            <div class="text-gray-400">
+                <p>Телефон специалиста по ОТ: <span class="text-white font-medium">внутр. 12-34</span></p>
+                <p>Единый телефон доверия по безопасности: <span class="text-white font-medium">8-800-000-00-00</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Скрипты управления приложением -->
+    <script>
+        // Инициализация иконок Lucide
+        lucide.createIcons();
+
+        // Переключение мобильного меню
+        const menuBtn = document.getElementById('menuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+
+        menuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Карта названий страниц для хлебных крошек
+        const pageTitles = {
+            'home': 'Главная',
+            'first-aid': 'Оказание первой помощи',
+            'siz': 'Нормы выдачи СИЗ',
+            'normative-docs': 'Нормативные документы',
+            'lna': 'Приказы и ЛНА ПЧ-13',
+            'iot': 'Инструкции по охране труда',
+            'schedules': 'Графики проверки знаний'
+        };
+
+        // Функция роутинга / переключения страниц
+        function navigateTo(pageId) {
+            // Скрываем мобильное меню при клике
+            mobileMenu.classList.add('hidden');
+
+            // Скрываем все страницы
+            const pages = document.querySelectorAll('.page-content');
+            pages.forEach(page => page.classList.add('hidden'));
+
+            // Показываем нужную страницу
+            const targetPage = document.getElementById(`page-${pageId}`);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+            }
+
+            // Управление хлебными крошками
+            const breadcrumbs = document.getElementById('breadcrumbs');
+            const currentPageTitle = document.getElementById('currentPageTitle');
+
+            if (pageId === 'home') {
+                breadcrumbs.classList.add('hidden');
+                breadcrumbs.classList.remove('flex');
+            } else {
+                breadcrumbs.classList.remove('hidden');
+                breadcrumbs.classList.add('flex');
+                currentPageTitle.textContent = pageTitles[pageId] || '';
+            }
+
+            // Прокрутка наверх при переходе
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Регистрация простейшего Service Worker прямо из кода для поддержки PWA
+        if ('serviceWorker' in navigator) {
+            const swCode = `
+                self.addEventListener('install', (e) => self.skipWaiting());
+                self.addEventListener('fetch', (e) => e.respondWith(fetch(e.request)));
+            `;
+            const blob = new Blob([swCode], { type: 'application/javascript' });
+            navigator.serviceWorker.register(URL.createObjectURL(blob))
+                .catch(err => console.log('SW setup skipped'));
+        }
+    </script>
+</body>
+</html>
