@@ -558,12 +558,12 @@
                                 <select id="subdivisionSelect" onchange="onSubdivisionChange(this.value)" 
                                         class="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-rzd-red focus:border-rzd-red transition shadow-inner">
                                     <option value="">-- Выберите подразделение --</option>
-                                    <option value="pd1">Линейный участок № 1 — Околоток ПД-1</option>
-                                    <option value="pd2">Линейный участок № 1 — Околоток ПД-2</option>
-                                    <option value="pd3">Линейный участок № 2 — Околоток ПД-3</option>
-                                    <option value="pd4">Линейный участок № 2 — Околоток ПД-4</option>
-                                    <option value="pdb">Участок механизации — Цех ПДБ (Мастерские)</option>
-                                    <option value="itr">Руководство и ИТР ПЧ-13</option>
+                                    <option value="pd1">Линейный участок № 1</option>
+                                    <option value="pd2">Линейный участок № 2</option>
+                                    <option value="pd3">Линейный участок № 3</option>
+                                    <option value="pd4">Линейный участок № 4</option>
+                                    <option value="pd5">Линейный участок № 5</option>
+                                    <option value="pd7">Линейный участок № 7</option>
                                 </select>
                             </div>
 
@@ -957,9 +957,9 @@
             }
 
             const examDays = {
-                9: { title: "ПД-1, ПД-2", text: "Проверка знаний по охране труда" },
+                9: { title: "ЛУ-1, ЛУ-2", text: "Проверка знаний по охране труда" },
                 16: { title: "Все подразделения", text: "Экзамен по электробезопасности" },
-                23: { title: "ПД-3, ПДБ", text: "Внеочередная проверка знаний ОТ" }
+                23: { title: "ЛУ-3, ПДБ", text: "Внеочередная проверка знаний ОТ" }
             };
 
             for (let day = 1; day <= totalDays; day++) {
@@ -1007,7 +1007,7 @@
                 { title: 'Трудовой Кодекс РФ (Раздел ОТ)', page: 'normative-docs', desc: 'Федеральный закон по охране труда' },
                 { title: 'Приказ № 102/ПЧ-13', page: 'lna', desc: 'О назначении ответственных лиц за ОТ' },
                 { title: 'ИОТ-ПЧ13-001-2023 Для монтера пути', page: 'iot', desc: 'Инструкция по охране труда' },
-                { title: 'График проверки знаний ПД-1, ПД-2', page: 'schedules', desc: 'Расписание экзаменов' }
+                { title: 'График проверки знаний ЛУ-1, ЛУ-2', page: 'schedules', desc: 'Расписание экзаменов' }
             ];
 
             const filtered = searchableElements.filter(el => 
