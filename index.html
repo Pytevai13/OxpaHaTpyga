@@ -39,7 +39,6 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
-        /* Дополнительные стили для имитации РЖД полосы */
         .rzd-top-bar {
             background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%);
         }
@@ -52,7 +51,6 @@
             box-shadow: 0 10px 20px rgba(226, 26, 26, 0.15);
         }
 
-        /* Железнодорожные пути */
         .railway-track {
             background: repeating-linear-gradient(
                 90deg,
@@ -65,13 +63,11 @@
             border-bottom: 2px solid #374151;
         }
 
-        /* Анимация состава */
         #train-container {
             will-change: transform;
             transition: transform 0.1s ease-out;
         }
 
-        /* Всплывающая подсказка календаря */
         .calendar-day {
             position: relative;
         }
@@ -320,21 +316,21 @@
                 </h2>
                 <p class="text-sm text-gray-600 mb-4">Выберите должность для просмотра установленных норм выдачи спецодежды и средств защиты:</p>
 
-                <!-- Интерактивные кнопки должностей -->
+                <!-- Интерактивные кнопки должностей с активным переключением -->
                 <div class="flex flex-wrap gap-2 mb-6">
-                    <button onclick="showSizFor('monter')" class="siz-btn px-4 py-2 bg-rzd-red text-white text-sm font-medium rounded-lg shadow hover:bg-rzd-darkRed transition">
+                    <button onclick="showSizFor('monter', this)" class="siz-role-btn px-4 py-2 bg-rzd-red text-white text-sm font-medium rounded-lg shadow transition">
                         Монтер пути
                     </button>
-                    <button onclick="showSizFor('signalist')" class="siz-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+                    <button onclick="showSizFor('signalist', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
                         Сигналист
                     </button>
-                    <button onclick="showSizFor('brigadir')" class="siz-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+                    <button onclick="showSizFor('brigadir', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
                         Бригадир пути
                     </button>
-                    <button onclick="showSizFor('machinist')" class="siz-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+                    <button onclick="showSizFor('machinist', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
                         Машинист ж/д машин
                     </button>
-                    <button onclick="showSizFor('zapletal')" class="siz-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
+                    <button onclick="showSizFor('zapletal', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">
                         Заплетальщик каната
                     </button>
                 </div>
@@ -355,8 +351,6 @@
                 </h2>
                 
                 <div class="space-y-3">
-                    <!-- Шаблон кнопки скачивания нормативного документа -->
-                    <!-- ДЛЯ ДОБАВЛЕНИЯ НОВОГО ДОКУМЕНТА: Скопируйте тег <a> ниже и укажите путь в href -->
                     <a href="https://example.com/files/tk_rf.pdf" target="_blank" download 
                        class="p-4 bg-gray-50 border border-gray-200 rounded-lg hover:border-rzd-red hover:bg-red-50/30 transition flex justify-between items-center group">
                         <div>
@@ -413,7 +407,6 @@
                 </h2>
                 
                 <div class="space-y-3">
-                    <!-- ДЛЯ ДОБАВЛЕНИЯ НОВОГО ПРИКАЗА ПЧ-13: Скопируйте ссылку ниже -->
                     <a href="https://example.com/files/prikaz_102.pdf" target="_blank" download 
                        class="p-4 border-l-4 border-rzd-red bg-gray-50 rounded-r-lg border border-gray-200 hover:bg-red-50/30 transition flex justify-between items-center group">
                         <div>
@@ -472,7 +465,7 @@
                     </button>
                 </div>
 
-                <!-- Карточки инструкций -->
+                <!-- Карточки инструкций без "Действует до..." -->
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <a href="https://example.com/iot/iot_001.pdf" target="_blank" download data-category="prof"
                        class="iot-item p-4 border rounded-lg hover:border-rzd-red hover:shadow-md transition flex justify-between items-start bg-gray-50 group">
@@ -527,148 +520,124 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     
-                    <!-- ПОЛОВИНА 1: Календарь текущего месяца c подсвечиванием -->
-                    <div class="border rounded-lg p-4 bg-gray-50">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="font-bold text-gray-800 flex items-center">
-                                <i data-lucide="clock" class="w-4 h-4 mr-2 text-rzd-red"></i>
-                                Текущий месяц: Июль 2026 г.
-                            </h3>
-                            <span class="text-xs bg-red-100 text-rzd-red px-2 py-0.5 rounded font-medium">Экзамены ПЧ-13</span>
-                        </div>
-
-                        <!-- Сетка календаря -->
-                        <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500 mb-2">
-                            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-500">Сб</div><div class="text-red-500">Вс</div>
-                        </div>
-
-                        <div class="grid grid-cols-7 gap-1 text-xs text-center">
-                            <!-- Пустые дни для выравнивания начала месяца -->
-                            <div></div><div></div>
-
-                            <!-- 1-8 число -->
-                            <div class="p-2 border rounded bg-white">1</div>
-                            <div class="p-2 border rounded bg-white">2</div>
-                            <div class="p-2 border rounded bg-white">3</div>
-                            <div class="p-2 border rounded bg-white">4</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">5</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">6</div>
-                            <div class="p-2 border rounded bg-white">7</div>
-
-                            <!-- 9 число (ПОДСВЕЧЕНО) -->
-                            <div class="calendar-day p-2 border rounded bg-rzd-red text-white font-bold cursor-pointer shadow">
-                                9
-                                <div class="calendar-tooltip hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-30">
-                                    <b>ПД-1, ПД-2</b><br>Проверка знаний по охране труда
-                                </div>
+                    <!-- ПОЛОВИНА 1: Динамический Календарь (Актуальная дата) -->
+                    <div class="border rounded-lg p-4 bg-gray-50 flex flex-col justify-between">
+                        <div>
+                            <div class="flex justify-between items-center mb-4">
+                                <h3 class="font-bold text-gray-800 flex items-center">
+                                    <i data-lucide="clock" class="w-4 h-4 mr-2 text-rzd-red"></i>
+                                    <span id="calendarMonthHeader">Загрузка даты...</span>
+                                </h3>
+                                <span class="text-xs bg-red-100 text-rzd-red px-2 py-0.5 rounded font-medium">Экзамены ПЧ-13</span>
                             </div>
 
-                            <div class="p-2 border rounded bg-white">10</div>
-                            <div class="p-2 border rounded bg-white">11</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">12</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">13</div>
-                            <div class="p-2 border rounded bg-white">14</div>
-                            <div class="p-2 border rounded bg-white">15</div>
-
-                            <!-- 16 число (ПОДСВЕЧЕНО) -->
-                            <div class="calendar-day p-2 border rounded bg-rzd-red text-white font-bold cursor-pointer shadow">
-                                16
-                                <div class="calendar-tooltip hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-30">
-                                    <b>Все подразделения</b><br>Экзамен по электробезопасности
-                                </div>
+                            <!-- Сетка дней недели -->
+                            <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500 mb-2">
+                                <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-500">Сб</div><div class="text-red-500">Вс</div>
                             </div>
 
-                            <div class="p-2 border rounded bg-white">17</div>
-                            <div class="p-2 border rounded bg-white">18</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">19</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">20</div>
-                            <div class="p-2 border rounded bg-white">21</div>
-                            <div class="p-2 border rounded bg-white">22</div>
-
-                            <!-- 23 число (ПОДСВЕЧЕНО) -->
-                            <div class="calendar-day p-2 border rounded bg-rzd-red text-white font-bold cursor-pointer shadow">
-                                23
-                                <div class="calendar-tooltip hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-30">
-                                    <b>ПД-3, ПДБ</b><br>Внеочередная проверка знания правил ОТ
-                                </div>
+                            <!-- Динамическая сетка чисел -->
+                            <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 text-xs text-center">
+                                <!-- Генерируется через JS -->
                             </div>
-
-                            <div class="p-2 border rounded bg-white">24</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">25</div>
-                            <div class="p-2 border rounded bg-white text-red-500 font-bold">26</div>
-                            <div class="p-2 border rounded bg-white">27</div>
-                            <div class="p-2 border rounded bg-white">28</div>
-                            <div class="p-2 border rounded bg-white">29</div>
-                            <div class="p-2 border rounded bg-white">30</div>
-                            <div class="p-2 border rounded bg-white">31</div>
                         </div>
 
-                        <div class="mt-4 text-xs text-gray-500 flex items-center">
-                            <span class="w-3 h-3 bg-rzd-red rounded mr-2 inline-block"></span>
-                            Нажмите или наведите на подсвеченный день для детализации
+                        <div class="mt-6 pt-3 border-t text-xs text-gray-600 space-y-1">
+                            <p class="flex items-center"><span class="w-3 h-3 border-2 border-blue-600 rounded mr-2 inline-block bg-blue-50"></span> Сегодняшнее число</p>
+                            <p class="flex items-center"><span class="w-3 h-3 bg-rzd-red rounded mr-2 inline-block"></span> Дни проведения экзаменов (нажмите для деталей)</p>
                         </div>
                     </div>
 
-                    <!-- ПОЛОВИНА 2: Подразделения и загрузка графиков -->
+                    <!-- ПОЛОВИНА 2: Линейные участки -> Подразделения -> Графики -->
                     <div>
                         <h3 class="font-bold text-gray-800 mb-4 flex items-center">
                             <i data-lucide="building" class="w-4 h-4 mr-2 text-rzd-red"></i>
-                            Графики по подразделениям ПЧ-13
+                            Графики по линейным участкам и подразделениям
                         </h3>
 
-                        <div class="space-y-3">
-                            <!-- Подразделение 1 -->
-                            <div class="border rounded-lg bg-gray-50 p-3">
-                                <span class="font-bold text-gray-800 text-sm">Околоток ПД-1 (1-я дистанция)</span>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                                    <!-- Ссылка на график ОТ -->
-                                    <a href="https://example.com/schedules/pd1_ot.pdf" target="_blank" download 
-                                       class="p-2 bg-white border border-gray-200 rounded text-xs text-center font-medium hover:border-rzd-red hover:text-rzd-red transition shadow-sm flex items-center justify-center">
-                                        <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i>
-                                        График по Охране Труда
-                                    </a>
-                                    <!-- Ссылка на график ЭБ -->
-                                    <a href="https://example.com/schedules/pd1_eb.pdf" target="_blank" download 
-                                       class="p-2 bg-white border border-gray-200 rounded text-xs text-center font-medium hover:border-rzd-red hover:text-rzd-red transition shadow-sm flex items-center justify-center">
-                                        <i data-lucide="zap" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i>
-                                        График по Электробезопасности
-                                    </a>
+                        <!-- Выбор участка -->
+                        <div class="space-y-4">
+                            
+                            <!-- ЛИНЕЙНЫЙ УЧАСТОК № 1 -->
+                            <div class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                                <div class="bg-gray-100 px-4 py-2.5 font-bold text-gray-800 text-sm border-b flex justify-between items-center">
+                                    <span>Линейный участок № 1</span>
+                                    <span class="text-xs text-gray-500 font-normal">ПД-1, ПД-2</span>
+                                </div>
+                                <div class="p-3 space-y-3">
+                                    <!-- Околоток ПД-1 -->
+                                    <div class="bg-gray-50 p-2.5 rounded border border-gray-100">
+                                        <div class="font-semibold text-xs text-gray-700 mb-2">Околоток ПД-1 (дистанция № 1)</div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <a href="https://example.com/schedules/pd1_ot.pdf" target="_blank" download 
+                                               class="p-2 bg-white border border-gray-200 hover:border-rzd-red rounded text-left transition shadow-xs group">
+                                                <div class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red flex items-center">
+                                                    <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i> График по ОТ
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-0.5">Дата проверки: 25.07.2026</div>
+                                            </a>
+                                            <a href="https://example.com/schedules/pd1_eb.pdf" target="_blank" download 
+                                               class="p-2 bg-white border border-gray-200 hover:border-rzd-red rounded text-left transition shadow-xs group">
+                                                <div class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red flex items-center">
+                                                    <i data-lucide="zap" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i> График по ЭБ
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-0.5">Дата проверки: 18.07.2026</div>
+                                            </a>
+                                        </div>
+                                    </div>
+
+                                    <!-- Околоток ПД-2 -->
+                                    <div class="bg-gray-50 p-2.5 rounded border border-gray-100">
+                                        <div class="font-semibold text-xs text-gray-700 mb-2">Околоток ПД-2 (дистанция № 2)</div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <a href="https://example.com/schedules/pd2_ot.pdf" target="_blank" download 
+                                               class="p-2 bg-white border border-gray-200 hover:border-rzd-red rounded text-left transition shadow-xs group">
+                                                <div class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red flex items-center">
+                                                    <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i> График по ОТ
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-0.5">Дата проверки: 26.07.2026</div>
+                                            </a>
+                                            <a href="https://example.com/schedules/pd2_eb.pdf" target="_blank" download 
+                                               class="p-2 bg-white border border-gray-200 hover:border-rzd-red rounded text-left transition shadow-xs group">
+                                                <div class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red flex items-center">
+                                                    <i data-lucide="zap" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i> График по ЭБ
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-0.5">Дата проверки: 19.07.2026</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Подразделение 2 -->
-                            <div class="border rounded-lg bg-gray-50 p-3">
-                                <span class="font-bold text-gray-800 text-sm">Околоток ПД-2 (2-я дистанция)</span>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                                    <a href="https://example.com/schedules/pd2_ot.pdf" target="_blank" download 
-                                       class="p-2 bg-white border border-gray-200 rounded text-xs text-center font-medium hover:border-rzd-red hover:text-rzd-red transition shadow-sm flex items-center justify-center">
-                                        <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i>
-                                        График по Охране Труда
-                                    </a>
-                                    <a href="https://example.com/schedules/pd2_eb.pdf" target="_blank" download 
-                                       class="p-2 bg-white border border-gray-200 rounded text-xs text-center font-medium hover:border-rzd-red hover:text-rzd-red transition shadow-sm flex items-center justify-center">
-                                        <i data-lucide="zap" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i>
-                                        График по Электробезопасности
-                                    </a>
+                            <!-- ЛИНЕЙНЫЙ УЧАСТОК МЕХАНИЗАЦИИ И СНАБЖЕНИЯ -->
+                            <div class="border border-gray-200 rounded-lg overflow-hidden bg-white shadow-sm">
+                                <div class="bg-gray-100 px-4 py-2.5 font-bold text-gray-800 text-sm border-b flex justify-between items-center">
+                                    <span>Участок механизации (ПДБ)</span>
+                                    <span class="text-xs text-gray-500 font-normal">База ПЧ-13</span>
+                                </div>
+                                <div class="p-3 space-y-3">
+                                    <div class="bg-gray-50 p-2.5 rounded border border-gray-100">
+                                        <div class="font-semibold text-xs text-gray-700 mb-2">Цех механизации и мастерские (ПДБ)</div>
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <a href="https://example.com/schedules/pdb_ot.pdf" target="_blank" download 
+                                               class="p-2 bg-white border border-gray-200 hover:border-rzd-red rounded text-left transition shadow-xs group">
+                                                <div class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red flex items-center">
+                                                    <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i> График по ОТ
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-0.5">Дата проверки: 28.07.2026</div>
+                                            </a>
+                                            <a href="https://example.com/schedules/pdb_eb.pdf" target="_blank" download 
+                                               class="p-2 bg-white border border-gray-200 hover:border-rzd-red rounded text-left transition shadow-xs group">
+                                                <div class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red flex items-center">
+                                                    <i data-lucide="zap" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i> График по ЭБ
+                                                </div>
+                                                <div class="text-[10px] text-gray-500 mt-0.5">Дата проверки: 21.07.2026</div>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
 
-                            <!-- Подразделение 3 -->
-                            <div class="border rounded-lg bg-gray-50 p-3">
-                                <span class="font-bold text-gray-800 text-sm">Цех механизации / ПДБ</span>
-                                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-2">
-                                    <a href="https://example.com/schedules/pdb_ot.pdf" target="_blank" download 
-                                       class="p-2 bg-white border border-gray-200 rounded text-xs text-center font-medium hover:border-rzd-red hover:text-rzd-red transition shadow-sm flex items-center justify-center">
-                                        <i data-lucide="file-text" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i>
-                                        График по Охране Труда
-                                    </a>
-                                    <a href="https://example.com/schedules/pdb_eb.pdf" target="_blank" download 
-                                       class="p-2 bg-white border border-gray-200 rounded text-xs text-center font-medium hover:border-rzd-red hover:text-rzd-red transition shadow-sm flex items-center justify-center">
-                                        <i data-lucide="zap" class="w-3.5 h-3.5 mr-1 text-rzd-red"></i>
-                                        График по Электробезопасности
-                                    </a>
-                                </div>
-                            </div>
                         </div>
                     </div>
 
@@ -877,7 +846,19 @@
             ]
         };
 
-        function showSizFor(role) {
+        // Исправленный выбор с переходом красного выделения
+        function showSizFor(role, btnElement) {
+            // Сбрасываем стили всех кнопок СИЗ
+            const buttons = document.querySelectorAll('.siz-role-btn');
+            buttons.forEach(btn => {
+                btn.className = "siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition";
+            });
+
+            // Выделяем нажатую кнопку
+            if (btnElement) {
+                btnElement.className = "siz-role-btn px-4 py-2 bg-rzd-red text-white text-sm font-medium rounded-lg shadow transition";
+            }
+
             const list = sizData[role] || [];
             let html = `
                 <table class="w-full text-left border-collapse text-sm">
@@ -895,8 +876,76 @@
             html += `</tbody></table>`;
             document.getElementById('sizTableContainer').innerHTML = html;
         }
+
         // Инициализация таблицы СИЗ
         showSizFor('monter');
+
+        // ГЕНЕРАЦИЯ ДИНАМИЧЕСКОГО КАЛЕНДАРЯ НА ТЕКУЩИЙ МЕСЯЦ
+        function renderCalendar() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth(); // 0 - Январь
+            const currentDate = now.getDate();
+
+            const monthNames = [
+                "Январь", "Февраль", "Март", "Апрель", "Май", "Июнь",
+                "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"
+            ];
+
+            // Заголовок текущего месяца
+            document.getElementById('calendarMonthHeader').textContent = `Текущий месяц: ${monthNames[currentMonth]} ${currentYear} г.`;
+
+            const daysGrid = document.getElementById('calendarDaysGrid');
+            daysGrid.innerHTML = '';
+
+            // Первый день месяца и всего дней
+            const firstDayIndex = new Date(currentYear, currentMonth, 1).getDay(); // 0 - Воскресенье
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+            // Смещение для начала недели с Понедельника
+            let paddingDays = firstDayIndex === 0 ? 6 : firstDayIndex - 1;
+
+            for (let i = 0; i < paddingDays; i++) {
+                daysGrid.appendChild(document.createElement('div'));
+            }
+
+            // Экзаменационные дни месяца
+            const examDays = {
+                9: { title: "ПД-1, ПД-2", text: "Проверка знаний по охране труда" },
+                16: { title: "Все подразделения", text: "Экзамен по электробезопасности" },
+                23: { title: "ПД-3, ПДБ", text: "Внеочередная проверка знаний ОТ" }
+            };
+
+            for (let day = 1; day <= totalDays; day++) {
+                const dayDiv = document.createElement('div');
+                const isToday = (day === currentDate);
+                const exam = examDays[day];
+
+                let classes = "p-2 border rounded font-medium text-xs transition flex flex-col justify-center items-center h-9 relative ";
+
+                if (exam) {
+                    classes += "calendar-day bg-rzd-red text-white font-bold cursor-pointer shadow ";
+                    dayDiv.innerHTML = `
+                        ${day}
+                        <div class="calendar-tooltip hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-30 font-normal text-center">
+                            <b>${exam.title}</b><br>${exam.text}
+                        </div>
+                    `;
+                } else {
+                    dayDiv.textContent = day;
+                    if (isToday) {
+                        classes += "border-2 border-blue-600 bg-blue-50 text-blue-900 font-bold shadow-xs ";
+                    } else {
+                        classes += "bg-white text-gray-800 ";
+                    }
+                }
+
+                dayDiv.className = classes;
+                daysGrid.appendChild(dayDiv);
+            }
+        }
+
+        renderCalendar();
 
         // Фильтрация ИОТ
         function filterIot(category) {
