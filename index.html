@@ -448,7 +448,7 @@
                 </h2>
                 <p class="text-sm text-gray-600 mb-4">Выберите категорию для быстрого поиска инструкции:</p>
 
-                <!-- Подменю кнопок-категорий ИОТ c исправленным переключением -->
+                <!-- Подменю кнопок-категорий ИОТ -->
                 <div class="flex flex-wrap gap-2 mb-6">
                     <button onclick="filterIot('all', this)" class="iot-cat-btn px-4 py-1.5 bg-rzd-red text-white text-xs font-medium rounded-full shadow transition">
                         Все инструкции
@@ -516,7 +516,7 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     
-                    <!-- ПОЛОВИНА 1: Динамический Календарь -->
+                    <!-- ПОЛОВИНА 1: Динамический Календарь (Авто-привязка к датам подразделений) -->
                     <div class="border rounded-lg p-4 bg-gray-50 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-center mb-4">
@@ -532,13 +532,13 @@
                             </div>
 
                             <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 text-xs text-center">
-                                <!-- Генерируется через JS -->
+                                <!-- Генерируется через JS из базы subdivisionData -->
                             </div>
                         </div>
 
                         <div class="mt-6 pt-3 border-t text-xs text-gray-600 space-y-1">
                             <p class="flex items-center"><span class="w-3 h-3 border-2 border-blue-600 rounded mr-2 inline-block bg-blue-50"></span> Сегодняшнее число</p>
-                            <p class="flex items-center"><span class="w-3 h-3 bg-rzd-red rounded mr-2 inline-block"></span> Дни проведения экзаменов (нажмите для деталей)</p>
+                            <p class="flex items-center"><span class="w-3 h-3 bg-rzd-red rounded mr-2 inline-block"></span> Дни проведения экзаменов (наведите/нажмите для деталей)</p>
                         </div>
                     </div>
 
@@ -574,7 +574,7 @@
                                     <option value="pd17">Линейный участок № 17</option>
                                     <option value="pd18">Линейный участок № 18</option>
                                     <option value="ud">Участок диагностики</option>
-                                    <option value="uzp">Участок землянного полотна</option>
+                                    <option value="uzp">Участок земляного полотна</option>
                                     <option value="ppr1">ППР №1</option>
                                     <option value="ppr2">ППР №2</option>
                                     <option value="ppr3">ППР №3</option>
@@ -821,7 +821,7 @@
 
         showSizFor('monter');
 
-        // Фильтрация ИОТ c исправленным выделением кнопок
+        // Фильтрация ИОТ
         function filterIot(category, btnElement) {
             const buttons = document.querySelectorAll('.iot-cat-btn');
             buttons.forEach(btn => {
@@ -842,7 +842,7 @@
             });
         }
 
-        // Данные графиков подразделений для выбора
+        // Данные графиков подразделений
         const subdivisionData = {
             'pd1': {
                 section: 'Линейный участок № 1',
@@ -957,7 +957,7 @@
                 ebDate: '21.10.2026'
             },
             'uzp': {
-                section: 'Участок землянного полотна',
+                section: 'Участок земляного полотна',
                 otLink: 'https://disk.yandex.ru/i/mez_pu0kGF-WWg',
                 otDate: '14.10.2026',
                 ebLink: 'https://disk.yandex.ru/i/eWIICmuXLel0Dw',
@@ -1013,7 +1013,7 @@
                 <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm space-y-3 border-l-4 border-l-rzd-red">
                     <div>
                         <span class="text-[11px] font-semibold text-rzd-red uppercase tracking-wider">${data.section}</span>
-                        <h4 class="font-bold text-gray-800 text-sm mt-0.5">${data.name}</h4>
+                        <h4 class="font-bold text-gray-800 text-sm mt-0.5">${data.section}</h4>
                     </div>
 
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
@@ -1044,11 +1044,11 @@
             lucide.createIcons();
         }
 
-        // Календарь текущего месяца
+        // Автоматический Календарь текущего месяца (считает события прямо из subdivisionData)
         function renderCalendar() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth();
+            const currentMonth = now.getMonth(); // 0 - Январь
             const currentDate = now.getDate();
 
             const monthNames = [
@@ -1070,25 +1070,59 @@
                 daysGrid.appendChild(document.createElement('div'));
             }
 
-            const examDays = {
-                9: { title: "ЛУ-1, ЛУ-2", text: "Проверка знаний по охране труда" },
-                16: { title: "Все подразделения", text: "Экзамен по электробезопасности" },
-                23: { title: "ЛУ-3, ПДБ", text: "Внеочередная проверка знаний ОТ" }
-            };
+            // АВТОМАТИЧЕСКИЙ СБОР ДАТ ЭКЗАМЕНОВ ДЛЯ ТЕКУЩЕГО МЕСЯЦА И ГОДА
+            const examsByDay = {};
 
+            Object.values(subdivisionData).forEach(sub => {
+                // Парсим дату ОТ
+                if (sub.otDate) {
+                    const parts = sub.otDate.split('.');
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0], 10);
+                        const month = parseInt(parts[1], 10) - 1;
+                        const year = parseInt(parts[2], 10);
+
+                        if (month === currentMonth && year === currentYear) {
+                            if (!examsByDay[day]) examsByDay[day] = [];
+                            examsByDay[day].push(`${sub.section} (ОТ)`);
+                        }
+                    }
+                }
+                // Парсим дату ЭБ
+                if (sub.ebDate) {
+                    const parts = sub.ebDate.split('.');
+                    if (parts.length === 3) {
+                        const day = parseInt(parts[0], 10);
+                        const month = parseInt(parts[1], 10) - 1;
+                        const year = parseInt(parts[2], 10);
+
+                        if (month === currentMonth && year === currentYear) {
+                            if (!examsByDay[day]) examsByDay[day] = [];
+                            // Избегаем дубликатов текста если даты ОТ и ЭБ совпадают
+                            const label = `${sub.section} (ЭБ)`;
+                            if (!examsByDay[day].includes(label)) {
+                                examsByDay[day].push(label);
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Отрисовка дней месяца
             for (let day = 1; day <= totalDays; day++) {
                 const dayDiv = document.createElement('div');
                 const isToday = (day === currentDate);
-                const exam = examDays[day];
+                const dayExams = examsByDay[day];
 
                 let classes = "p-2 border rounded font-medium text-xs transition flex flex-col justify-center items-center h-9 relative ";
 
-                if (exam) {
+                if (dayExams && dayExams.length > 0) {
                     classes += "calendar-day bg-rzd-red text-white font-bold cursor-pointer shadow ";
+                    const examTooltipText = dayExams.join('<br>');
                     dayDiv.innerHTML = `
                         ${day}
-                        <div class="calendar-tooltip hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-48 p-2 bg-gray-900 text-white text-xs rounded shadow-lg z-30 font-normal text-center">
-                            <b>${exam.title}</b><br>${exam.text}
+                        <div class="calendar-tooltip hidden absolute left-1/2 -translate-x-1/2 bottom-full mb-1 w-52 p-2 bg-gray-900 text-white text-[11px] rounded shadow-lg z-30 font-normal text-center leading-tight">
+                            <b>Экзамены на ${day} число:</b><br>${examTooltipText}
                         </div>
                     `;
                 } else {
