@@ -107,12 +107,13 @@
             </div>
 
             <!-- Десктопная навигация -->
-            <nav class="hidden md:flex space-x-4 text-sm font-medium">
+            <nav class="hidden md:flex flex-wrap space-x-3 text-xs lg:text-sm font-medium">
                 <button onclick="navigateTo('home')" class="hover:text-red-200 transition">Главная</button>
                 <button onclick="navigateTo('first-aid')" class="hover:text-red-200 transition">Первая помощь</button>
                 <button onclick="navigateTo('siz')" class="hover:text-red-200 transition">СИЗ</button>
                 <button onclick="navigateTo('iot')" class="hover:text-red-200 transition">ИОТ</button>
-                <button onclick="navigateTo('schedules')" class="hover:text-red-200 transition">Графики проверки знаний</button>
+                <button onclick="navigateTo('schedules')" class="hover:text-red-200 transition">Графики</button>
+                <button onclick="navigateTo('sout')" class="hover:text-red-200 transition font-bold bg-white/10 px-2 py-0.5 rounded">СОУТ</button>
             </nav>
         </div>
 
@@ -125,6 +126,7 @@
             <button onclick="navigateTo('lna')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Приказы и ЛНА</button>
             <button onclick="navigateTo('iot')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Инструкции по ОТ</button>
             <button onclick="navigateTo('schedules')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Графики проверки знаний</button>
+            <button onclick="navigateTo('sout')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded font-bold">СОУТ (Условия труда)</button>
         </div>
     </header>
 
@@ -164,7 +166,7 @@
                     <p class="text-gray-600 mt-1">Официальный информационный ресурс по охране труда для работников Владивостокской дистанции пути ПЧ-13.</p>
                 </div>
                 <div class="inline-flex items-center px-3 py-1 bg-red-100 text-rzd-red font-semibold text-xs rounded-full">
-                    ПЧ-13
+                    ПЧ-13 ОАО «РЖД»
                 </div>
             </div>
 
@@ -249,6 +251,20 @@
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">Графики проверки знаний</h3>
                         <p class="text-sm text-gray-600">Расписание экзаменов и проверок знаний по охране труда и электробезопасности.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 7: СОУТ (Специальная оценка условий труда) -->
+                <div onclick="navigateTo('sout')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="award" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">СОУТ (Условия труда)</h3>
+                        <p class="text-sm text-gray-600">Результаты специальной оценки условий труда на рабочих местах ПЧ-13 и перечни мероприятий.</p>
                     </div>
                     <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
                         Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
@@ -404,9 +420,6 @@
                     <button onclick="filterIot('works', this)" class="iot-cat-btn px-4 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full hover:bg-gray-200 transition">
                         По видам работ
                     </button>
-                    <button onclick="filterIot('works', this)" class="iot-cat-btn px-4 py-1.5 bg-gray-100 text-gray-700 text-xs font-medium rounded-full hover:bg-gray-200 transition">
-                        Общая
-                    </button>
                 </div>
 
                 <!-- Карточки инструкций -->
@@ -434,7 +447,7 @@
 
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     
-                    <!-- ПОЛОВИНА 1: Динамический Календарь (Авто-привязка к датам подразделений) -->
+                    <!-- ПОЛОВИНА 1: Динамический Календарь -->
                     <div class="border rounded-lg p-4 bg-gray-50 flex flex-col justify-between">
                         <div>
                             <div class="flex justify-between items-center mb-4">
@@ -450,7 +463,7 @@
                             </div>
 
                             <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 text-xs text-center">
-                                <!-- Генерируется через JS из базы subdivisionData -->
+                                <!-- Генерируется через JS -->
                             </div>
                         </div>
 
@@ -460,14 +473,13 @@
                         </div>
                     </div>
 
-                    <!-- ПОЛОВИНА 2: Интерактивный выбор подразделения -->
+                    <!-- ПОЛОВИНА 2: Выбор подразделения -->
                     <div class="flex flex-col justify-start">
                         <h3 class="font-bold text-gray-800 mb-3 flex items-center">
                             <i data-lucide="building" class="w-4 h-4 mr-2 text-rzd-red"></i>
                             Графики по линейным участкам и подразделениям
                         </h3>
 
-                        <!-- Выпадающее меню выбора подразделения -->
                         <div class="bg-gray-50 p-4 border rounded-lg shadow-xs space-y-4">
                             <div>
                                 <label for="subdivisionSelect" class="block text-xs font-semibold text-gray-700 mb-2">
@@ -500,7 +512,6 @@
                                 </select>
                             </div>
 
-                            <!-- Окошко с двумя графиками выбранного подразделения -->
                             <div id="subdivisionScheduleCard" class="mt-4">
                                 <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center text-xs text-gray-500">
                                     <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
@@ -510,6 +521,101 @@
                         </div>
                     </div>
 
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: СОУТ ==================== -->
+        <section id="page-sout" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                            <i data-lucide="award" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                            Специальная оценка условий труда (СОУТ)
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-1">Информация о классах условий труда и мерах защиты работников Владивостокской дистанции пути</p>
+                    </div>
+                    <a href="https://example.com/sout_summary_pch13.pdf" target="_blank" download 
+                       class="inline-flex items-center justify-center px-4 py-2.5 bg-rzd-red text-white text-sm font-semibold rounded-lg shadow hover:bg-rzd-darkRed transition">
+                        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                        Сводная ведомость СОУТ ПЧ-13 (PDF)
+                    </a>
+                </div>
+
+                <!-- Сводная информационная карточка -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-rzd-red">
+                        <span class="text-xs text-gray-500 uppercase font-semibold">Всего рабочих мест</span>
+                        <div class="text-2xl font-extrabold text-gray-800 mt-1">100%</div>
+                        <p class="text-xs text-gray-600 mt-1">Охвачено специальной оценкой</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-yellow-500">
+                        <span class="text-xs text-gray-500 uppercase font-semibold">Класс условий труда 3.1 - 3.2</span>
+                        <div class="text-2xl font-extrabold text-gray-800 mt-1">Вредный</div>
+                        <p class="text-xs text-gray-600 mt-1">Путевые и ремонтные профессии</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-green-500">
+                        <span class="text-xs text-gray-500 uppercase font-semibold">Класс условий труда 2.0</span>
+                        <div class="text-2xl font-extrabold text-gray-800 mt-1">Допустимый</div>
+                        <p class="text-xs text-gray-600 mt-1">Административный персонал и ИТР</p>
+                    </div>
+                </div>
+
+                <!-- Выбор карт СОУТ по подразделениям -->
+                <div class="bg-gray-50 p-4 border rounded-lg mb-6">
+                    <h3 class="font-bold text-gray-800 text-sm mb-3 flex items-center">
+                        <i data-lucide="file-check" class="w-4 h-4 mr-1.5 text-rzd-red"></i>
+                        Карты СОУТ и перечни мероприятий по подразделениям ПЧ-13
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <!-- ДЛЯ ДОБАВЛЕНИЯ НОВОЙ КАРТЫ СОУТ: скопируйте ссылку ниже -->
+                        <a href="https://example.com/sout_lu1.pdf" target="_blank" download 
+                           class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                            <div>
+                                <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Линейный участок № 1–2</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Дата проведения: 15.03.2025</p>
+                            </div>
+                            <span class="text-xs text-rzd-red font-medium flex items-center"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> PDF</span>
+                        </a>
+
+                        <a href="https://example.com/sout_lu2.pdf" target="_blank" download 
+                           class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                            <div>
+                                <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Линейный участок № 3–5</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Дата проведения: 20.04.2025</p>
+                            </div>
+                            <span class="text-xs text-rzd-red font-medium flex items-center"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> PDF</span>
+                        </a>
+
+                        <a href="https://example.com/sout_pdb.pdf" target="_blank" download 
+                           class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                            <div>
+                                <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Участок механизации (ПДБ)</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Дата проведения: 10.05.2025</p>
+                            </div>
+                            <span class="text-xs text-rzd-red font-medium flex items-center"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> PDF</span>
+                        </a>
+
+                        <a href="https://example.com/sout_diag.pdf" target="_blank" download 
+                           class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                            <div>
+                                <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Участок диагностики и земполотна</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Дата проведения: 01.06.2025</p>
+                            </div>
+                            <span class="text-xs text-rzd-red font-medium flex items-center"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> PDF</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Мероприятия по улучшению условий труда -->
+                <div class="border rounded-lg p-4 bg-white">
+                    <h3 class="font-bold text-gray-800 text-sm mb-2">План мероприятий по улучшению условий и охраны труда</h3>
+                    <ul class="list-disc list-inside text-xs text-gray-700 space-y-1.5">
+                        <li>Обеспечение работников модернизированными СИЗ с лучшими защитными свойствами от шума и вибрации.</li>
+                        <li>Оснащение рабочих мест дистанции пути современным путевым бензоинструментом с пониженным уровнем вибрации.</li>
+                        <li>Проведение регулярных медосмотров и санитарно-гигиенического контроля.</li>
+                    </ul>
                 </div>
             </div>
         </section>
@@ -623,6 +729,7 @@
             'lna': 'Приказы и ЛНА ПЧ-13',
             'iot': 'Инструкции по охране труда',
             'schedules': 'Графики проверки знаний',
+            'sout': 'Специальная оценка условий труда (СОУТ)',
             'search': 'Поиск'
         };
 
@@ -962,11 +1069,11 @@
             lucide.createIcons();
         }
 
-        // Автоматический Календарь текущего месяца (считает события прямо из subdivisionData)
+        // Автоматический Календарь
         function renderCalendar() {
             const now = new Date();
             const currentYear = now.getFullYear();
-            const currentMonth = now.getMonth(); // 0 - Январь
+            const currentMonth = now.getMonth();
             const currentDate = now.getDate();
 
             const monthNames = [
@@ -988,11 +1095,9 @@
                 daysGrid.appendChild(document.createElement('div'));
             }
 
-            // АВТОМАТИЧЕСКИЙ СБОР ДАТ ЭКЗАМЕНОВ ДЛЯ ТЕКУЩЕГО МЕСЯЦА И ГОДА
             const examsByDay = {};
 
             Object.values(subdivisionData).forEach(sub => {
-                // Парсим дату ОТ
                 if (sub.otDate) {
                     const parts = sub.otDate.split('.');
                     if (parts.length === 3) {
@@ -1006,7 +1111,6 @@
                         }
                     }
                 }
-                // Парсим дату ЭБ
                 if (sub.ebDate) {
                     const parts = sub.ebDate.split('.');
                     if (parts.length === 3) {
@@ -1016,7 +1120,6 @@
 
                         if (month === currentMonth && year === currentYear) {
                             if (!examsByDay[day]) examsByDay[day] = [];
-                            // Избегаем дубликатов текста если даты ОТ и ЭБ совпадают
                             const label = `${sub.section} (ЭБ)`;
                             if (!examsByDay[day].includes(label)) {
                                 examsByDay[day].push(label);
@@ -1026,7 +1129,6 @@
                 }
             });
 
-            // Отрисовка дней месяца
             for (let day = 1; day <= totalDays; day++) {
                 const dayDiv = document.createElement('div');
                 const isToday = (day === currentDate);
@@ -1073,7 +1175,8 @@
                 { title: 'Трудовой Кодекс РФ (Раздел ОТ)', page: 'normative-docs', desc: 'Федеральный закон по охране труда' },
                 { title: 'Приказ № 102/ПЧ-13', page: 'lna', desc: 'О назначении ответственных лиц за ОТ' },
                 { title: 'ИОТ-ПЧ13-001-2023 Для монтера пути', page: 'iot', desc: 'Инструкция по охране труда' },
-                { title: 'График проверки знаний ЛУ-1, ЛУ-2', page: 'schedules', desc: 'Расписание экзаменов' }
+                { title: 'График проверки знаний ЛУ-1, ЛУ-2', page: 'schedules', desc: 'Расписание экзаменов' },
+                { title: 'СОУТ (Условия труда)', page: 'sout', desc: 'Результаты проведения специальной оценки условий труда' }
             ];
 
             const filtered = searchableElements.filter(el => 
