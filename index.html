@@ -133,6 +133,8 @@
             <button onclick="navigateTo('anshlyagi')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Информационные аншлаги</button>
             <button onclick="navigateTo('tech-processes')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">Технологические процессы</button>
             <button onclick="navigateTo('sout')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded font-bold">СОУТ (Условия труда)</button>
+            <button onclick="navigateTo('ksotp')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">КСОТ-П</button>
+            <button onclick="navigateTo('med-commission')" class="block w-full text-left py-2 hover:bg-rzd-red px-2 rounded">График медкомиссий</button>
         </div>
     </header>
 
@@ -316,6 +318,34 @@
                         </div>
                         <h3 class="text-lg font-bold text-gray-900 mb-2">СОУТ (Условия труда)</h3>
                         <p class="text-sm text-gray-600">Результаты специальной оценки условий труда на рабочих местах ПЧ-13 и перечни мероприятий.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+
+                <!-- Блок 11: КСОТ-П -->
+                <div onclick="navigateTo('ksotp')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="check-square" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">КСОТ-П</h3>
+                        <p class="text-sm text-gray-600">Комплексная система оценки состояния охраны труда на производственном объекте, ведомости 3-х ступенчатого контроля и листки талонов.</p>
+                    </div>
+                    <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
+                        Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
+                    </div>
+                </div>
+                
+                <!-- Блок 12: График медицинских комиссий -->
+                <div onclick="navigateTo('med-commission')" class="rzd-card bg-white p-6 rounded-lg shadow cursor-pointer flex flex-col justify-between">
+                    <div>
+                        <div class="w-12 h-12 bg-red-50 text-rzd-red rounded-lg flex items-center justify-center mb-4">
+                            <i data-lucide="stethoscope" class="w-7 h-7"></i>
+                        </div>
+                        <h3 class="text-lg font-bold text-gray-900 mb-2">График медкомиссий</h3>
+                        <p class="text-sm text-gray-600">Расписание прохождения периодических медицинских осмотров, ПФО и психоосвидетельствования работников ПЧ-13.</p>
                     </div>
                     <div class="mt-4 flex items-center text-rzd-red font-medium text-sm">
                         Перейти <i data-lucide="chevron-right" class="w-4 h-4 ml-1"></i>
@@ -864,6 +894,124 @@
                         <li>Проведение регулярных медосмотров и санитарно-гигиенического контроля.</li>
                     </ul>
                 </div>
+                <!-- ==================== СТРАНИЦА: КСОТ-П ==================== -->
+        <section id="page-ksotp" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                            <i data-lucide="check-square" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                            Комплексная система оценки состояния охраны труда (КСОТ-П)
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-1">Визуализированный производственный контроль на рабочих местах ПЧ-13</p>
+                    </div>
+                    <a href="https://example.com/files/ksotp_polozhenie.pdf" target="_blank" download 
+                       class="inline-flex items-center justify-center px-4 py-2.5 bg-rzd-red text-white text-sm font-semibold rounded-lg shadow hover:bg-rzd-darkRed transition">
+                        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                        Положение КСОТ-П ОАО «РЖД» (PDF)
+                    </a>
+                </div>
+
+                <!-- Блок визуализации ступеней контроля -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                    <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-rzd-red">
+                        <span class="text-xs text-rzd-red font-bold uppercase">1 Ступень контроля</span>
+                        <h4 class="font-bold text-gray-800 text-sm mt-1">Ежесменный осмотр</h4>
+                        <p class="text-xs text-gray-600 mt-1">Проводится перед началом смены бригадиром / дорожным мастером с записью в журналах КСОТ-П.</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-yellow-500">
+                        <span class="text-xs text-yellow-600 font-bold uppercase">2 Ступень контроля</span>
+                        <h4 class="font-bold text-gray-800 text-sm mt-1">Ежемесячный осмотр</h4>
+                        <p class="text-xs text-gray-600 mt-1">Проводится начальником участка / начальным цеха совместно с уполномоченным по ОТ.</p>
+                    </div>
+                    <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-blue-600">
+                        <span class="text-xs text-blue-600 font-bold uppercase">3 Ступень контроля</span>
+                        <h4 class="font-bold text-gray-800 text-sm mt-1">Ежеквартальный осмотр</h4>
+                        <p class="text-xs text-gray-600 mt-1">Проводится комиссией под председательством руководства ПЧ-13.</p>
+                    </div>
+                </div>
+
+                <!-- Бланки и ведомости для скачивания -->
+                <div class="bg-gray-50 p-4 border rounded-lg space-y-3">
+                    <h3 class="font-bold text-gray-800 text-sm flex items-center">
+                        <i data-lucide="file-text" class="w-4 h-4 mr-1.5 text-rzd-red"></i>
+                        Формы бланков и журналы КСОТ-П
+                    </h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <a href="https://example.com/files/ksotp_vedomost.pdf" target="_blank" download 
+                           class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                            <div>
+                                <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Ведомость несоответствий КСОТ-П</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Форма ежедневного заполнения</p>
+                            </div>
+                            <span class="text-xs text-rzd-red font-medium flex items-center"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Скачать</span>
+                        </a>
+
+                        <a href="https://example.com/files/ksotp_akt.pdf" target="_blank" download 
+                           class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                            <div>
+                                <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Акт проверки 2-й и 3-й ступеней КСОТ-П</h4>
+                                <p class="text-[11px] text-gray-500 mt-0.5">Утвержденная форма проверки</p>
+                            </div>
+                            <span class="text-xs text-rzd-red font-medium flex items-center"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Скачать</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ==================== СТРАНИЦА: ГРАФИК МЕДИЦИНСКИХ КОМИССИЙ ==================== -->
+        <section id="page-med-commission" class="page-content hidden space-y-6">
+            <div class="bg-white p-6 rounded-lg shadow-sm">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-4">
+                    <div>
+                        <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                            <i data-lucide="stethoscope" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                            График прохождения медицинских комиссий
+                        </h2>
+                        <p class="text-xs text-gray-500 mt-1">Периодические медосмотры, ПФО и психофизиологические освидетельствования работников ПЧ-13</p>
+                    </div>
+                    <a href="https://example.com/files/med_general_schedule.pdf" target="_blank" download 
+                       class="inline-flex items-center justify-center px-4 py-2.5 bg-rzd-red text-white text-sm font-semibold rounded-lg shadow hover:bg-rzd-darkRed transition">
+                        <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                        Общий график медкомиссий ПЧ-13 на 2026 год (PDF)
+                    </a>
+                </div>
+
+                <!-- Выбор подразделения для медосмотра -->
+                <div class="bg-gray-50 p-4 border rounded-lg space-y-4">
+                    <div>
+                        <label for="medSubdivisionSelect" class="block text-xs font-semibold text-gray-700 mb-2">
+                            Выберите линейный участок / околоток для просмотра сроков медосмотра:
+                        </label>
+                        <select id="medSubdivisionSelect" onchange="onMedSubdivisionChange(this.value)" 
+                                class="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-rzd-red focus:border-rzd-red transition shadow-inner">
+                            <option value="">-- Выберите подразделение --</option>
+                            <option value="pd1">Линейный участок № 1 (Околотки ПД-1, ПД-2)</option>
+                            <option value="pd2">Линейный участок № 2 (Околотки ПД-3, ПД-4)</option>
+                            <option value="pdb">Участок механизации (ПДБ)</option>
+                            <option value="ud">Участок диагностики и земполотна</option>
+                        </select>
+                    </div>
+
+                    <!-- Результат выбора медосмотра -->
+                    <div id="medScheduleCard">
+                        <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center text-xs text-gray-500">
+                            <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
+                            Выберите подразделение из списка выше для отображения сроков медосмотра и направлений.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Памятка по медкомиссии -->
+                <div class="p-4 border rounded-lg bg-red-50/50 border-red-200">
+                    <h4 class="font-bold text-xs text-rzd-red uppercase">Важно при прохождении медкомиссии:</h4>
+                    <ul class="list-disc list-inside text-xs text-gray-700 mt-2 space-y-1">
+                        <li>При себе иметь направление, паспорт, СНИЛС и полис ОМС.</li>
+                        <li>Прибыть в ЧУЗ «Клиническая больница "РЖД-Медицина"» натощак.</li>
+                        <li>Обязательно пройти замену направления у специалиста по ОТ ПЧ-13 после завершения осмотра.</li>
+                    </ul>
+                </div>
             </div>
         </section>
 
@@ -980,6 +1128,8 @@
             'anshlyagi': 'Информационные аншлаги',
             'tech-processes': 'Технологические процессы',
             'sout': 'Специальная оценка условий труда (СОУТ)',
+            'ksotp': 'КСОТ-П (Контроль охраны труда)',
+            'med-commission': 'График медицинских комиссий',
             'search': 'Поиск'
         };
 
@@ -1429,7 +1579,9 @@
                 { title: 'График проверки знаний ЛУ-1, ЛУ-2', page: 'schedules', desc: 'Расписание экзаменов' },
                 { title: 'Информационные аншлаги', page: 'anshlyagi', desc: 'Плакаты и щиты безопасности' },
                 { title: 'Технологические процессы', page: 'tech-processes', desc: 'Регламенты и технологические карты' },
-                { title: 'СОУТ (Условия труда)', page: 'sout', desc: 'Результаты проведения специальной оценки условий труда' }
+                { title: 'СОУТ (Условия труда)', page: 'sout', desc: 'Результаты проведения специальной оценки условий труда' },
+                { title: 'КСОТ-П (Контроль охраны труда)', page: 'ksotp', desc: 'Визуализированный производственный контроль, журналы и ведомости 3 ступеней' },
+                { title: 'График медицинских комиссий', page: 'med-commission', desc: 'Периодические медосмотры, ПФО и направления' }
             ];
 
             const filtered = searchableElements.filter(el => 
@@ -1469,6 +1621,76 @@
         window.addEventListener('scroll', updateTrainPosition);
         window.addEventListener('resize', updateTrainPosition);
         updateTrainPosition();
+
+        // Данные по медкомиссиям
+        const medCommissionData = {
+            'pd1': {
+                name: 'Линейный участок № 1 (Околотки ПД-1, ПД-2)',
+                period: 'Август - Сентябрь 2026 г.',
+                pfoDate: '12.08.2026',
+                link: 'https://example.com/files/med_pd1.pdf'
+            },
+            'pd2': {
+                name: 'Линейный участок № 2 (Околотки ПД-3, ПД-4)',
+                period: 'Сентябрь - Октябрь 2026 г.',
+                pfoDate: '05.09.2026',
+                link: 'https://example.com/files/med_pd2.pdf'
+            },
+            'pdb': {
+                name: 'Участок механизации (ПДБ)',
+                period: 'Октябрь 2026 г.',
+                pfoDate: '15.10.2026',
+                link: 'https://example.com/files/med_pdb.pdf'
+            },
+            'ud': {
+                name: 'Участок диагностики и земполотна',
+                period: 'Ноябрь 2026 г.',
+                pfoDate: '01.11.2026',
+                link: 'https://example.com/files/med_ud.pdf'
+            }
+        };
+        
+        function onMedSubdivisionChange(val) {
+            const container = document.getElementById('medScheduleCard');
+            const data = medCommissionData[val];
+        
+            if (!data) {
+                container.innerHTML = `
+                    <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center text-xs text-gray-500">
+                        <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
+                        Выберите подразделение из списка выше для отображения сроков медосмотра и направлений.
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+        
+            container.innerHTML = `
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm space-y-3 border-l-4 border-l-rzd-red">
+                    <div>
+                        <span class="text-[11px] font-semibold text-rzd-red uppercase tracking-wider">График медосмотра</span>
+                        <h4 class="font-bold text-gray-800 text-sm mt-0.5">${data.name}</h4>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 text-xs">
+                        <div class="p-3 bg-gray-50 border rounded-lg">
+                            <span class="text-gray-500">Период медкомиссии:</span>
+                            <p class="font-bold text-gray-800 mt-1">${data.period}</p>
+                        </div>
+                        <div class="p-3 bg-gray-50 border rounded-lg">
+                            <span class="text-gray-500">Дата ПФО / Психоосвидетельствования:</span>
+                            <p class="font-bold text-rzd-red mt-1">${data.pfoDate}</p>
+                        </div>
+                    </div>
+                    <div class="pt-1">
+                        <a href="${data.link}" target="_blank" download 
+                           class="inline-flex items-center text-xs font-semibold text-rzd-red hover:underline">
+                            <i data-lucide="download" class="w-4 h-4 mr-1"></i> Скачать поименный список и направления (PDF)
+                        </a>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
     </script>
 </body>
 </html>
