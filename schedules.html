@@ -138,12 +138,155 @@
 
     <script>
         lucide.createIcons();
+        // Данные графиков подразделений
         const subdivisionData = {
-            'pd1': { section: 'Линейный участок № 1', otLink: 'https://disk.yandex.ru/i/VB9k8P-LDE_95w', otDate: '28.10.2026', ebLink: 'https://disk.yandex.ru/i/zAvnA0luAZHokw', ebDate: '28.10.2026' },
-            'pd2': { section: 'Линейный участок № 2', otLink: 'https://disk.yandex.ru/i/GUkttHO2mB0Mwg', otDate: '11.11.2026', ebLink: 'https://disk.yandex.ru/i/vgneOnfIOq5GFg', ebDate: '11.11.2026' },
-            'pd3': { section: 'Линейный участок № 3', otLink: 'https://disk.yandex.ru/i/4VDB1cgikWNWJg', otDate: '17.06.2026', ebLink: 'https://disk.yandex.ru/i/uyhrblaQpPI0Lg', ebDate: '17.06.2026' },
-            'pd4': { section: 'Линейный участок № 4', otLink: 'https://disk.yandex.ru/i/9XSeoEeMdRYhwA', otDate: '24.06.2026', ebLink: 'https://disk.yandex.ru/i/xt9bjERCJuAnVA', ebDate: '24.06.2026' },
-            'pd5': { section: 'Линейный участок № 5', otLink: 'https://disk.yandex.ru/i/J-wwyCywgDHS-g', otDate: '01.07.2026', ebLink: 'https://disk.yandex.ru/i/zeJD8-GiyuEQYA', ebDate: '01.07.2026' }
+            'pd1': {
+                section: 'Линейный участок № 1',
+                otLink: 'https://disk.yandex.ru/i/VB9k8P-LDE_95w',
+                otDate: '28.10.2026',
+                ebLink: 'https://disk.yandex.ru/i/zAvnA0luAZHokw',
+                ebDate: '28.10.2026'
+            },
+            'pd2': {
+                section: 'Линейный участок № 2',
+                otLink: 'https://disk.yandex.ru/i/GUkttHO2mB0Mwg',
+                otDate: '11.11.2026',
+                ebLink: 'https://disk.yandex.ru/i/vgneOnfIOq5GFg',
+                ebDate: '11.11.2026'
+            },
+            'pd3': {
+                section: 'Линейный участок № 3',
+                otLink: 'https://disk.yandex.ru/i/4VDB1cgikWNWJg',
+                otDate: '17.06.2026',
+                ebLink: 'https://disk.yandex.ru/i/uyhrblaQpPI0Lg',
+                ebDate: '17.06.2026'
+            },
+            'pd4': {
+                section: 'Линейный участок № 4',
+                otLink: 'https://disk.yandex.ru/i/9XSeoEeMdRYhwA',
+                otDate: '24.06.2026',
+                ebLink: 'https://disk.yandex.ru/i/xt9bjERCJuAnVA',
+                ebDate: '24.06.2026'
+            },
+            'pd5': {
+                section: 'Линейный участок № 5',
+                otLink: 'https://disk.yandex.ru/i/J-wwyCywgDHS-g',
+                otDate: '01.07.2026',
+                ebLink: 'https://disk.yandex.ru/i/zeJD8-GiyuEQYA',
+                ebDate: '01.07.2026'
+            },
+            'pd7': {
+                section: 'Линейный участок № 7',
+                otLink: 'https://disk.yandex.ru/i/vJQmCSP6ylA_8A',
+                otDate: '08.07.2026',
+                ebLink: 'https://disk.yandex.ru/i/3O18Ssd8pLVFpg',
+                ebDate: '08.07.2026'
+            },
+            'pd8': {
+                section: 'Линейный участок № 8',
+                otLink: 'https://disk.yandex.ru/i/7wDg6QMScUEcgg',
+                otDate: '15.07.2026',
+                ebLink: 'https://disk.yandex.ru/i/2lBlAjwwMa-jLQ',
+                ebDate: '15.07.2026'
+            },
+            'pd10': {
+                section: 'Линейный участок № 10',
+                otLink: 'https://disk.yandex.ru/i/PHi1vAkrNVZYWQ',
+                otDate: '22.07.2026',
+                ebLink: 'https://disk.yandex.ru/i/mMirFBfv-36M5w',
+                ebDate: '22.07.2026'
+            },
+            'pd12': {
+                section: 'Линейный участок № 12',
+                otLink: 'https://disk.yandex.ru/i/TH9EMJ3LUzlMFg',
+                otDate: '29.07.2026',
+                ebLink: 'https://disk.yandex.ru/i/6ttWLke7PCjbFQ',
+                ebDate: '29.07.2026'
+            },
+            'pd13': {
+                section: 'Линейный участок № 13',
+                otLink: 'https://disk.yandex.ru/i/g_M6sTpqhzKQzw',
+                otDate: '05.08.2026',
+                ebLink: 'https://disk.yandex.ru/i/rUljHZNCVPnDLA',
+                ebDate: '05.08.2026'
+            },
+            'pd14': {
+                section: 'Линейный участок № 14',
+                otLink: 'https://disk.yandex.ru/i/9YlHEd29O0KjcQ',
+                otDate: '12.08.2026',
+                ebLink: 'https://disk.yandex.ru/i/SlJOzlgnrULOLA',
+                ebDate: '12.08.2026'
+            },
+            'pd15': {
+                section: 'Линейный участок № 15',
+                otLink: 'https://disk.yandex.ru/i/TeKKyCpXoAIV6A',
+                otDate: '19.08.2026',
+                ebLink: 'https://disk.yandex.ru/i/YXXe20lk0ggvfw',
+                ebDate: '19.08.2026'
+            },
+            'pd16': {
+                section: 'Линейный участок № 16',
+                otLink: 'https://disk.yandex.ru/i/jxYlNOd_5kjtmg',
+                otDate: '26.08.2026',
+                ebLink: 'https://disk.yandex.ru/i/zfjCfpa4Ut9WqQ',
+                ebDate: '26.08.2026'
+            },
+            'pd17': {
+                section: 'Линейный участок № 17',
+                otLink: 'https://disk.yandex.ru/i/xjZ2JA3Lyv7HxA',
+                otDate: '02.09.2026',
+                ebLink: 'https://disk.yandex.ru/i/G3lzAgwWm60Xgg',
+                ebDate: '02.09.2026'
+            },
+            'pd18': {
+                section: 'Линейный участок № 18',
+                otLink: 'https://disk.yandex.ru/i/zFpMAO7CkFeaMA',
+                otDate: '09.09.2026',
+                ebLink: 'https://disk.yandex.ru/i/aNWUU07fCf95Dw',
+                ebDate: '09.09.2026'
+            },
+            'ud': {
+                section: 'Участок диагностики',
+                otLink: 'https://disk.yandex.ru/i/DGdcAWR1hiXuwQ',
+                otDate: '21.10.2026',
+                ebLink: 'https://disk.yandex.ru/i/FWdse4-YQHLhAw',
+                ebDate: '21.10.2026'
+            },
+            'uzp': {
+                section: 'Участок земляного полотна',
+                otLink: 'https://disk.yandex.ru/i/mez_pu0kGF-WWg',
+                otDate: '14.10.2026',
+                ebLink: 'https://disk.yandex.ru/i/eWIICmuXLel0Dw',
+                ebDate: '14.10.2026'
+            },
+            'ppr1': {
+                section: 'ППР №1',
+                otLink: 'https://disk.yandex.ru/i/xNMrP0YIJhs73w',
+                otDate: '16.09.2026',
+                ebLink: 'https://disk.yandex.ru/i/M0SbCgSnGuVIzg',
+                ebDate: '16.09.2026'
+            },
+            'ppr2': {
+                section: 'ППР №2',
+                otLink: 'https://disk.yandex.ru/i/fYWP7nKSs3O2tA',
+                otDate: '23.09.2026',
+                ebLink: 'https://disk.yandex.ru/i/Y5cOphoYZJRnQA',
+                ebDate: '23.09.2026'
+            },
+            'ppr3': {
+                section: 'ППР №3',
+                otLink: 'https://disk.yandex.ru/i/KliY3gGVtLmFAg',
+                otDate: '30.09.2026',
+                ebLink: 'https://disk.yandex.ru/i/EhEjd_O6aEMZ9A',
+                ebDate: '30.09.2026'
+            },
+            'ppr4': {
+                section: 'ППР №4',
+                otLink: 'https://disk.yandex.ru/i/bWAKjntaLoWq2A',
+                otDate: '07.10.2026',
+                ebLink: 'https://disk.yandex.ru/i/0lvACFYj23uH9w',
+                ebDate: '07.10.2026'
+            }
         };
 
         function onSubdivisionChange(val) {
