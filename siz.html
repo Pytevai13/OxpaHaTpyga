@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Нормы выдачи СИЗ — Уголок ОТ ПЧ-13</title>
+    <meta name="theme-color" content="#E21A1A">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E21A1A'/><text x='50%' y='58%' font-family='Arial, sans-serif' font-weight='900' font-size='38' fill='white' text-anchor='middle' dominant-baseline='middle' letter-spacing='-1'>РЖД</text><rect x='20' y='75' width='60' height='4' rx='2' fill='white'/></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { rzd: { red: '#E21A1A', darkRed: '#B81414', gray: '#212529', lightGray: '#F4F5F7' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>.rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }</style>
+</head>
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased pb-12">
+
+    <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="bg-white text-rzd-red px-2.5 py-1 rounded-lg font-extrabold text-xl shadow">РЖД</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Электронный уголок охраны труда</h1>
+                    <p class="text-xs text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
+                </div>
+            </a>
+            <a href="index.html" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded text-xs font-semibold flex items-center transition">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На главную
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+        <nav class="flex items-center space-x-2 text-sm text-gray-600">
+            <a href="index.html" class="text-rzd-red hover:underline font-medium">Главная</a>
+            <span>/</span>
+            <span class="text-gray-800 font-semibold">Нормы выдачи СИЗ</span>
+        </nav>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-bold text-gray-900 mb-2 flex items-center">
+                <i data-lucide="shield-check" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                Нормы выдачи СИЗ в ПЧ-13
+            </h2>
+            <p class="text-sm text-gray-600 mb-4">Выберите должность для просмотра установленных норм выдачи спецодежды и средств защиты:</p>
+
+            <div class="flex flex-wrap gap-2 mb-6">
+                <button onclick="showSizFor('monter', this)" class="siz-role-btn px-4 py-2 bg-rzd-red text-white text-sm font-medium rounded-lg shadow transition">Монтер пути</button>
+                <button onclick="showSizFor('signalist', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">Сигналист</button>
+                <button onclick="showSizFor('brigadir', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">Бригадир пути</button>
+                <button onclick="showSizFor('master', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">Мастер дорожный</button>
+                <button onclick="showSizFor('dezurnii', this)" class="siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition">Дежурный по переезду</button>
+            </div>
+
+            <div id="sizTableContainer" class="overflow-x-auto border rounded-lg"></div>
+        </section>
+    </main>
+
+    <footer class="bg-rzd-gray text-white text-xs py-6 border-t-4 border-rzd-red">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <p>Владивостокская дистанция пути ПЧ-13 © 2026</p>
+            <p>Телефон по ОТ: внутр. 45-768</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const sizData = {
+            monter: [
+                { name: "Костюм сигнальный для путейцев", duration: "12 мес." },
+                { name: "Ботинки юфтевые с защитным носком", duration: "12 мес." },
+                { name: "Рукавицы комбинированные / перчатки", duration: "До износа" },
+                { name: "Каска защитная", duration: "24 мес." }
+            ],
+            signalist: [
+                { name: "Костюм сигнальный 3 класса защиты", duration: "12 мес." },
+                { name: "Плащ сигнальный для защиты от воды", duration: "36 мес." },
+                { name: "Сапоги юфтевые", duration: "12 мес." }
+            ],
+            brigadir: [
+                { name: "Костюм сигнальный защитный", duration: "24 мес." },
+                { name: "Каска защитная с подшлемником", duration: "24 мес." },
+                { name: "Очки защитные / Жилет", duration: "12 мес." }
+            ],
+            master: [
+                { name: "Костюм для машинистов ж/д машин", duration: "18 мес." },
+                { name: "Наушники противошумные", duration: "До износа" },
+                { name: "Перчатки с полимерным покрытием", duration: "1 мес." }
+            ],
+            dezurnii: [
+                { name: "Костюм защитный из плотной ткани", duration: "12 мес." },
+                { name: "Перчатки усиленные / фартук", duration: "1 мес." },
+                { name: "Очки защитные закрытого типа", duration: "До износа" }
+            ]
+        };
+
+        function showSizFor(role, btnElement) {
+            const buttons = document.querySelectorAll('.siz-role-btn');
+            buttons.forEach(btn => {
+                btn.className = "siz-role-btn px-4 py-2 bg-gray-100 text-gray-800 text-sm font-medium rounded-lg hover:bg-gray-200 transition";
+            });
+            if (btnElement) {
+                btnElement.className = "siz-role-btn px-4 py-2 bg-rzd-red text-white text-sm font-medium rounded-lg shadow transition";
+            }
+            const list = sizData[role] || [];
+            let html = `
+                <table class="w-full text-left border-collapse text-sm">
+                    <thead>
+                        <tr class="bg-gray-100 border-b">
+                            <th class="p-3 font-semibold">Наименование СИЗ</th>
+                            <th class="p-3 font-semibold">Срок носки</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y">
+            `;
+            list.forEach(item => {
+                html += `<tr><td class="p-3">${item.name}</td><td class="p-3 font-medium">${item.duration}</td></tr>`;
+            });
+            html += `</tbody></table>`;
+            document.getElementById('sizTableContainer').innerHTML = html;
+        }
+
+        showSizFor('monter');
+    </script>
+</body>
+</html>
