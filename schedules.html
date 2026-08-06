@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Графики проверки знаний — Уголок ОТ ПЧ-13</title>
+    <meta name="theme-color" content="#E21A1A">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E21A1A'/><text x='50%' y='58%' font-family='Arial, sans-serif' font-weight='900' font-size='38' fill='white' text-anchor='middle' dominant-baseline='middle' letter-spacing='-1'>РЖД</text><rect x='20' y='75' width='60' height='4' rx='2' fill='white'/></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { rzd: { red: '#E21A1A', darkRed: '#B81414', gray: '#212529', lightGray: '#F4F5F7' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }
+        .calendar-day { position: relative; }
+        .calendar-day:hover .calendar-tooltip { display: block; }
+    </style>
+</head>
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased pb-12">
+
+    <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="bg-white text-rzd-red px-2.5 py-1 rounded-lg font-extrabold text-xl shadow">РЖД</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Электронный уголок охраны труда</h1>
+                    <p class="text-xs text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
+                </div>
+            </a>
+            <a href="index.html" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded text-xs font-semibold flex items-center transition">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На главную
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+        <nav class="flex items-center space-x-2 text-sm text-gray-600">
+            <a href="index.html" class="text-rzd-red hover:underline font-medium">Главная</a>
+            <span>/</span>
+            <span class="text-gray-800 font-semibold">Графики проверки знаний</span>
+        </nav>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <h2 class="text-2xl font-bold text-gray-900 mb-6 flex items-center">
+                <i data-lucide="calendar" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                Графики проверки знаний ПЧ-13
+            </h2>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <!-- Календарь -->
+                <div class="border rounded-lg p-4 bg-gray-50 flex flex-col justify-between">
+                    <div>
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="font-bold text-gray-800 flex items-center">
+                                <i data-lucide="clock" class="w-4 h-4 mr-2 text-rzd-red"></i>
+                                <span id="calendarMonthHeader">Загрузка даты...</span>
+                            </h3>
+                            <span class="text-xs bg-red-100 text-rzd-red px-2 py-0.5 rounded font-medium">Экзамены ПЧ-13</span>
+                        </div>
+
+                        <div class="grid grid-cols-7 gap-1 text-center text-xs font-semibold text-gray-500 mb-2">
+                            <div>Пн</div><div>Вт</div><div>Ср</div><div>Чт</div><div>Пт</div><div class="text-red-500">Сб</div><div class="text-red-500">Вс</div>
+                        </div>
+
+                        <div id="calendarDaysGrid" class="grid grid-cols-7 gap-1 text-xs text-center"></div>
+                    </div>
+
+                    <div class="mt-6 pt-3 border-t text-xs text-gray-600 space-y-1">
+                        <p class="flex items-center"><span class="w-3 h-3 border-2 border-blue-600 rounded mr-2 inline-block bg-blue-50"></span> Сегодняшнее число</p>
+                        <p class="flex items-center"><span class="w-3 h-3 bg-rzd-red rounded mr-2 inline-block"></span> Дни экзаменов (наведите/нажмите)</p>
+                    </div>
+                </div>
+
+                <!-- Выбор линейного участка -->
+                <div class="flex flex-col justify-start">
+                    <h3 class="font-bold text-gray-800 mb-3 flex items-center">
+                        <i data-lucide="building" class="w-4 h-4 mr-2 text-rzd-red"></i>
+                        Графики по линейным участкам
+                    </h3>
+
+                    <div class="bg-gray-50 p-4 border rounded-lg space-y-4">
+                        <div>
+                            <label for="subdivisionSelect" class="block text-xs font-semibold text-gray-700 mb-2">
+                                Выберите линейный участок или подразделение ПЧ-13:
+                            </label>
+                            <select id="subdivisionSelect" onchange="onSubdivisionChange(this.value)" 
+                                    class="w-full p-2.5 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-800 focus:outline-none focus:ring-2 focus:ring-rzd-red shadow-inner">
+                                <option value="">-- Выберите подразделение --</option>
+                                <option value="pd1">Линейный участок № 1</option>
+                                <option value="pd2">Линейный участок № 2</option>
+                                <option value="pd3">Линейный участок № 3</option>
+                                <option value="pd4">Линейный участок № 4</option>
+                                <option value="pd5">Линейный участок № 5</option>
+                                <option value="pd7">Линейный участок № 7</option>
+                                <option value="pd8">Линейный участок № 8</option>
+                                <option value="pd10">Линейный участок № 10</option>
+                                <option value="pd12">Линейный участок № 12</option>
+                                <option value="pd13">Линейный участок № 13</option>
+                                <option value="pd14">Линейный участок № 14</option>
+                                <option value="pd15">Линейный участок № 15</option>
+                                <option value="pd16">Линейный участок № 16</option>
+                                <option value="pd17">Линейный участок № 17</option>
+                                <option value="pd18">Линейный участок № 18</option>
+                                <option value="ud">Участок диагностики</option>
+                                <option value="uzp">Участок земляного полотна</option>
+                                <option value="ppr1">ППР №1</option>
+                                <option value="ppr2">ППР №2</option>
+                                <option value="ppr3">ППР №3</option>
+                                <option value="ppr4">ППР №4</option>
+                            </select>
+                        </div>
+
+                        <div id="subdivisionScheduleCard">
+                            <div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center text-xs text-gray-500">
+                                <i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>
+                                Выберите подразделение для отображения графиков.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-rzd-gray text-white text-xs py-6 border-t-4 border-rzd-red">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <p>Владивостокская дистанция пути ПЧ-13 © 2026</p>
+            <p>Телефон по ОТ: внутр. 45-768</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const subdivisionData = {
+            'pd1': { section: 'Линейный участок № 1', otLink: 'https://disk.yandex.ru/i/VB9k8P-LDE_95w', otDate: '28.10.2026', ebLink: 'https://disk.yandex.ru/i/zAvnA0luAZHokw', ebDate: '28.10.2026' },
+            'pd2': { section: 'Линейный участок № 2', otLink: 'https://disk.yandex.ru/i/GUkttHO2mB0Mwg', otDate: '11.11.2026', ebLink: 'https://disk.yandex.ru/i/vgneOnfIOq5GFg', ebDate: '11.11.2026' },
+            'pd3': { section: 'Линейный участок № 3', otLink: 'https://disk.yandex.ru/i/4VDB1cgikWNWJg', otDate: '17.06.2026', ebLink: 'https://disk.yandex.ru/i/uyhrblaQpPI0Lg', ebDate: '17.06.2026' },
+            'pd4': { section: 'Линейный участок № 4', otLink: 'https://disk.yandex.ru/i/9XSeoEeMdRYhwA', otDate: '24.06.2026', ebLink: 'https://disk.yandex.ru/i/xt9bjERCJuAnVA', ebDate: '24.06.2026' },
+            'pd5': { section: 'Линейный участок № 5', otLink: 'https://disk.yandex.ru/i/J-wwyCywgDHS-g', otDate: '01.07.2026', ebLink: 'https://disk.yandex.ru/i/zeJD8-GiyuEQYA', ebDate: '01.07.2026' }
+        };
+
+        function onSubdivisionChange(val) {
+            const container = document.getElementById('subdivisionScheduleCard');
+            const data = subdivisionData[val];
+            if (!data) {
+                container.innerHTML = `<div class="p-4 bg-white border-2 border-dashed border-gray-300 rounded-lg text-center text-xs text-gray-500"><i data-lucide="mouse-pointer-click" class="w-8 h-8 mx-auto mb-2 text-gray-400"></i>Выберите подразделение из списка выше.</div>`;
+                lucide.createIcons();
+                return;
+            }
+            container.innerHTML = `
+                <div class="p-4 bg-white border border-gray-200 rounded-lg shadow-sm space-y-3 border-l-4 border-l-rzd-red">
+                    <h4 class="font-bold text-gray-800 text-sm">${data.section}</h4>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        <a href="${data.otLink}" target="_blank" download class="p-3 bg-gray-50 border border-gray-200 hover:border-rzd-red rounded-lg block">
+                            <div class="font-bold text-xs text-gray-800 flex items-center"><i data-lucide="file-text" class="w-4 h-4 mr-1.5 text-rzd-red"></i>График Охрана Труда</div>
+                            <div class="text-xs text-gray-500 mt-1">Дата: <span class="font-semibold text-gray-700">${data.otDate}</span></div>
+                        </a>
+                        <a href="${data.ebLink}" target="_blank" download class="p-3 bg-gray-50 border border-gray-200 hover:border-rzd-red rounded-lg block">
+                            <div class="font-bold text-xs text-gray-800 flex items-center"><i data-lucide="zap" class="w-4 h-4 mr-1.5 text-rzd-red"></i>График Электробезопасность</div>
+                            <div class="text-xs text-gray-500 mt-1">Дата: <span class="font-semibold text-gray-700">${data.ebDate}</span></div>
+                        </a>
+                    </div>
+                </div>
+            `;
+            lucide.createIcons();
+        }
+
+        function renderCalendar() {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+            const monthNames = ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь"];
+            document.getElementById('calendarMonthHeader').textContent = `${monthNames[currentMonth]} ${currentYear} г.`;
+            
+            const daysGrid = document.getElementById('calendarDaysGrid');
+            daysGrid.innerHTML = '';
+            const totalDays = new Date(currentYear, currentMonth + 1, 0).getDate();
+            
+            for (let day = 1; day <= totalDays; day++) {
+                const dayDiv = document.createElement('div');
+                dayDiv.className = "p-2 border rounded font-medium text-xs flex justify-center items-center h-9 bg-white text-gray-800";
+                dayDiv.textContent = day;
+                daysGrid.appendChild(dayDiv);
+            }
+        }
+        renderCalendar();
+    </script>
+</body>
+</html>
