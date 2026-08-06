@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>КСОТ-П — Уголок ОТ ПЧ-13</title>
+    <meta name="theme-color" content="#E21A1A">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E21A1A'/><text x='50%' y='58%' font-family='Arial, sans-serif' font-weight='900' font-size='38' fill='white' text-anchor='middle' dominant-baseline='middle' letter-spacing='-1'>РЖД</text><rect x='20' y='75' width='60' height='4' rx='2' fill='white'/></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { rzd: { red: '#E21A1A', darkRed: '#B81414', gray: '#212529', lightGray: '#F4F5F7' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>.rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }</style>
+</head>
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased pb-12">
+
+    <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="bg-white text-rzd-red px-2.5 py-1 rounded-lg font-extrabold text-xl shadow">РЖД</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Электронный уголок охраны труда</h1>
+                    <p class="text-xs text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
+                </div>
+            </a>
+            <a href="index.html" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded text-xs font-semibold flex items-center transition">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На главную
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+        <nav class="flex items-center space-x-2 text-sm text-gray-600">
+            <a href="index.html" class="text-rzd-red hover:underline font-medium">Главная</a>
+            <span>/</span>
+            <span class="text-gray-800 font-semibold">КСОТ-П</span>
+        </nav>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-4">
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                        <i data-lucide="check-square" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                        Комплексная система оценки состояния охраны труда (КСОТ-П)
+                    </h2>
+                    <p class="text-xs text-gray-500 mt-1">Визуализированный производственный контроль на рабочих местах ПЧ-13</p>
+                </div>
+                <a href="https://example.com/files/ksotp_polozhenie.pdf" target="_blank" download 
+                   class="inline-flex items-center justify-center px-4 py-2.5 bg-rzd-red text-white text-sm font-semibold rounded-lg shadow hover:bg-rzd-darkRed transition">
+                    <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                    Положение КСОТ-П ОАО «РЖД» (PDF)
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-rzd-red">
+                    <span class="text-xs text-rzd-red font-bold uppercase">1 Ступень контроля</span>
+                    <h4 class="font-bold text-gray-800 text-sm mt-1">Ежесменный осмотр</h4>
+                    <p class="text-xs text-gray-600 mt-1">Проводится перед началом смены бригадиром / дорожным мастером.</p>
+                </div>
+                <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-yellow-500">
+                    <span class="text-xs text-yellow-600 font-bold uppercase">2 Ступень контроля</span>
+                    <h4 class="font-bold text-gray-800 text-sm mt-1">Ежемесячный осмотр</h4>
+                    <p class="text-xs text-gray-600 mt-1">Проводится начальником участка совместно с уполномоченным по ОТ.</p>
+                </div>
+                <div class="p-4 bg-gray-50 border rounded-lg border-l-4 border-l-blue-600">
+                    <span class="text-xs text-blue-600 font-bold uppercase">3 Ступень контроля</span>
+                    <h4 class="font-bold text-gray-800 text-sm mt-1">Ежеквартальный осмотр</h4>
+                    <p class="text-xs text-gray-600 mt-1">Проводится комиссией под председательством руководства ПЧ-13.</p>
+                </div>
+            </div>
+
+            <div class="bg-gray-50 p-4 border rounded-lg space-y-3">
+                <h3 class="font-bold text-gray-800 text-sm flex items-center">
+                    <i data-lucide="file-text" class="w-4 h-4 mr-1.5 text-rzd-red"></i>
+                    Формы бланков и журналы КСОТ-П
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <a href="https://example.com/files/ksotp_vedomost.pdf" target="_blank" download class="p-3 bg-white border border-gray-200 hover:border-rzd-red rounded-lg transition flex justify-between items-center group">
+                        <div>
+                            <h4 class="font-semibold text-xs text-gray-800 group-hover:text-rzd-red">Ведомость несоответствий КСОТ-П</h4>
+                            <p class="text-[11px] text-gray-500 mt-0.5">Форма ежедневного заполнения</p>
+                        </div>
+                        <span class="text-xs text-rzd-red font-medium flex items-center shrink-0 ml-2"><i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Скачать</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-rzd-gray text-white text-xs py-6 border-t-4 border-rzd-red">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <p>Владивостокская дистанция пути ПЧ-13 © 2026</p>
+            <p>Телефон по ОТ: внутр. 45-768</p>
+        </div>
+    </footer>
+
+    <script>lucide.createIcons();</script>
+</body>
+</html>
