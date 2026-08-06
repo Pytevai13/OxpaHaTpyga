@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оказание первой помощи — Уголок ОТ ПЧ-13</title>
+    <meta name="theme-color" content="#E21A1A">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E21A1A'/><text x='50%' y='58%' font-family='Arial, sans-serif' font-weight='900' font-size='38' fill='white' text-anchor='middle' dominant-baseline='middle' letter-spacing='-1'>РЖД</text><rect x='20' y='75' width='60' height='4' rx='2' fill='white'/></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { rzd: { red: '#E21A1A', darkRed: '#B81414', gray: '#212529', lightGray: '#F4F5F7' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>.rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }</style>
+</head>
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased pb-12">
+
+    <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="index.html" class="flex items-center space-x-3">
+                <div class="bg-white text-rzd-red px-2.5 py-1 rounded-lg font-extrabold text-xl shadow">РЖД</div>
+                <div>
+                    <h1 class="font-bold text-lg leading-tight">Электронный уголок охраны труда</h1>
+                    <p class="text-xs text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
+                </div>
+            </a>
+            <a href="index.html" class="px-3 py-1.5 bg-white/20 hover:bg-white/30 rounded text-xs font-semibold flex items-center transition">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На главную
+            </a>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
+        <nav class="flex items-center space-x-2 text-sm text-gray-600">
+            <a href="index.html" class="text-rzd-red hover:underline font-medium">Главная</a>
+            <span>/</span>
+            <span class="text-gray-800 font-semibold">Оказание первой помощи</span>
+        </nav>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b pb-4">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i data-lucide="heart-pulse" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Оказание первой помощи
+                </h2>
+                <a href="https://example.com/instruct_first_aid_rzd.pdf" target="_blank" download 
+                   class="inline-flex items-center justify-center px-4 py-2.5 bg-rzd-red text-white text-sm font-semibold rounded-lg shadow hover:bg-rzd-darkRed transition">
+                    <i data-lucide="download" class="w-4 h-4 mr-2"></i>
+                    Скачать инструкцию ОАО «РЖД» (PDF)
+                </a>
+            </div>
+
+            <p class="text-sm text-gray-600 mb-4">Выберите вид травмы или экстренной ситуации для просмотра алгоритма действий:</p>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-6">
+                <button onclick="showInjuryInfo('electro')" class="injury-btn p-3 bg-gray-100 hover:bg-red-50 border border-gray-200 hover:border-rzd-red rounded-lg font-medium text-sm text-center transition">⚡ Электротравмы</button>
+                <button onclick="showInjuryInfo('bleeding')" class="injury-btn p-3 bg-gray-100 hover:bg-red-50 border border-gray-200 hover:border-rzd-red rounded-lg font-medium text-sm text-center transition">🩸 Кровотечения</button>
+                <button onclick="showInjuryInfo('fractures')" class="injury-btn p-3 bg-gray-100 hover:bg-red-50 border border-gray-200 hover:border-rzd-red rounded-lg font-medium text-sm text-center transition">🦴 Переломы</button>
+                <button onclick="showInjuryInfo('burns')" class="injury-btn p-3 bg-gray-100 hover:bg-red-50 border border-gray-200 hover:border-rzd-red rounded-lg font-medium text-sm text-center transition">🔥 Ожоги</button>
+                <button onclick="showInjuryInfo('frostbite')" class="injury-btn p-3 bg-gray-100 hover:bg-red-50 border border-gray-200 hover:border-rzd-red rounded-lg font-medium text-sm text-center transition">❄️ Обморожения</button>
+            </div>
+
+            <div id="injuryDetailsBlock" class="p-5 bg-red-50 rounded-lg border border-red-200 space-y-3">
+                <h3 id="injuryTitle" class="font-bold text-lg text-rzd-red">⚡ Поражение электрическим током</h3>
+                <div id="injuryContent" class="text-sm text-gray-700 space-y-2">
+                    <p>1. <b>Освободить пострадавшего от действия тока:</b> отключить рубильник, перерубить провод топором с сухой деревянной рукояткой или оттащить пострадавшего за сухую одежду.</p>
+                    <p>2. Вызвать скорую помощь (112) и сообщить дежурному по ПЧ-13.</p>
+                    <p>3. Проверить наличие дыхания и пульса. При их отсутствии начать искусственное дыхание и непрямой массаж сердца.</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-rzd-gray text-white text-xs py-6 border-t-4 border-rzd-red">
+        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
+            <p>Владивостокская дистанция пути ПЧ-13 © 2026</p>
+            <p>Телефон по ОТ: внутр. 45-768</p>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+        const injuryData = {
+            electro: {
+                title: '⚡ Поражение электрическим током',
+                content: '<p>1. <b>Освободить пострадавшего от действия тока:</b> отключить рубильник или оттащить пострадавшего за сухую одежду.</p><p>2. Вызвать скорую помощь (112) и дежурного ПЧ-13.</p><p>3. Начать сердечно-легочную реанимацию при отсутствии дыхания.</p>'
+            },
+            bleeding: {
+                title: '🩸 Кровотечения',
+                content: '<p>1. <b>Артериальное (алая струя):</b> наложить жгут выше раны с указанием времени наложения.</p><p>2. <b>Венозное (темное):</b> наложить давящую стерильную повязку.</p>'
+            },
+            fractures: {
+                title: '🦴 Переломы',
+                content: '<p>1. Обеспечить иммобилизацию (неподвижность) поврежденной конечности шиной или подручными средствами.</p><p>2. При открытом переломе — наложить стерильную повязку на рану.</p>'
+            },
+            burns: {
+                title: '🔥 Ожоги',
+                content: '<p>1. Охлаждать пораженный участок проточной холодной водой 10–15 минут.</p><p>2. Наложить сухую стерильную повязку. Маслом и жиром не смазывать!</p>'
+            },
+            frostbite: {
+                title: '❄️ Обморожения',
+                content: '<p>1. Перенести пострадавшего в теплое помещение.</p><p>2. Наложить теплоизолирующую повязку. Дать теплое питье.</p>'
+            }
+        };
+        function showInjuryInfo(key) {
+            const data = injuryData[key];
+            if (data) {
+                document.getElementById('injuryTitle').innerHTML = data.title;
+                document.getElementById('injuryContent').innerHTML = data.content;
+            }
+        }
+    </script>
+</body>
+</html>
