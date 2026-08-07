@@ -82,13 +82,20 @@
         </section>
     </main>
 
-    <footer class="bg-rzd-gray text-white text-xs py-6 border-t-4 border-rzd-red">
-        <div class="max-w-7xl mx-auto px-4 flex justify-between items-center">
-            <p>Владивостокская дистанция пути ПЧ-13 © 2026</p>
-            <p>Телефон по ОТ: внутр. 45-768</p>
+    <!-- Подвал страницы -->
+    <footer class="bg-rzd-gray text-white text-xs py-6 relative border-t-4 border-rzd-red mb-10">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div>
+                <p class="font-bold text-sm">Владивостокская дистанция пути ПЧ-13</p>
+                <p class="text-gray-400 mt-1">Электронный уголок охраны труда © 2026</p>
+            </div>
+            <div class="text-gray-400">
+                <p>Телефон специалиста по ОТ: <span class="text-white font-medium">внутр. 45-768</span></p>
+                <p>Единая горячая линия ОАО «РЖД»: <span class="text-white font-medium">8-800-775-00-00</span></p>
+            </div>
         </div>
     </footer>
-    
+
     <!-- Поезд РЖД Премиум внизу страницы -->
     <div class="fixed bottom-0 left-0 w-full bg-slate-900/85 backdrop-blur-md overflow-hidden h-14 flex items-end border-t border-red-600/40 shadow-2xl z-40">
         <div class="rail-track-pattern absolute bottom-1 left-0 w-full h-2.5 z-0 opacity-80"></div>
@@ -230,9 +237,30 @@
             trainContainer.style.transform = `translateX(${currentX}px)`;
         }
 
+        // 4. НАДЕЖНОЕ ДВИЖЕНИЕ ПОЕЗДА ПРИ СКРОЛЛЕ
+        function updateTrainPosition() {
+            const train = document.getElementById('train-container');
+            if (!train) return;
+            
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+
+            const trainWidth = 640;
+            const windowWidth = window.innerWidth;
+            
+            const startX = -trainWidth + 90;
+            const endX = windowWidth - 110;
+
+            const currentX = startX + (endX - startX) * scrollPercent;
+            train.style.transform = `translateX(${currentX}px)`;
+        }
+
+        // Запуск движения при загрузке страницы, изменении размера окна и прокрутке
+        window.addEventListener('DOMContentLoaded', updateTrainPosition);
+        window.addEventListener('load', updateTrainPosition);
         window.addEventListener('scroll', updateTrainPosition);
         window.addEventListener('resize', updateTrainPosition);
-        updateTrainPosition();
     </script>
 </body>
 </html>
