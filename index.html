@@ -24,67 +24,158 @@
         .rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }
         .rzd-card { transition: all 0.2s ease-in-out; border-top: 4px solid #E21A1A; }
         .rzd-card:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(226, 26, 26, 0.15); }
-        .railway-track {
-            background: repeating-linear-gradient(90deg, #4B5563 0px, #4B5563 4px, transparent 4px, transparent 16px);
-            border-top: 2px solid #374151; border-bottom: 2px solid #374151;
+        
+        /* Плавное выпадающее меню */
+        #dropdownMenu {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transform: translateY(-8px);
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                        opacity 0.3s ease, 
+                        transform 0.3s ease;
+        }
+        #dropdownMenu.open {
+            max-height: 700px;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Анимированный рельсовый путь */
+        .rail-track-pattern {
+            background: repeating-linear-gradient(
+                90deg,
+                #64748B 0px,
+                #64748B 3px,
+                transparent 3px,
+                transparent 18px
+            );
+            border-top: 2px solid #475569;
+            border-bottom: 2px solid #334155;
+        }
+
+        #train-container {
+            will-change: transform;
+            transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        @keyframes wheel-spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .wheel-rotate {
+            transform-origin: center;
+            transform-box: fill-box;
+            animation: wheel-spin 0.6s linear infinite;
         }
     </style>
 </head>
-<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased overflow-x-hidden pb-16">
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased overflow-x-hidden pb-20">
 
     <!-- Шапка сайта -->
     <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 py-3 flex flex-col md:flex-row justify-between items-center gap-3">
-            <div class="flex items-center justify-between w-full md:w-auto">
-                <a href="index.html" class="flex items-center space-x-3">
-                    <div class="bg-white text-rzd-red px-2.5 py-1 rounded-lg font-extrabold text-xl shadow flex items-center justify-center tracking-tighter">
-                        РЖД
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+            
+            <!-- Логотип -->
+            <a href="index.html" class="flex items-center space-x-3 shrink-0">
+                <div class="bg-white text-rzd-red px-2.5 py-1 rounded-lg font-extrabold text-xl shadow flex items-center justify-center tracking-tighter">
+                    РЖД
+                </div>
+                <div>
+                    <h1 class="font-bold text-base sm:text-lg leading-tight">Электронный уголок охраны труда</h1>
+                    <p class="text-[11px] text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
+                </div>
+            </a>
+
+            <!-- Правая часть: Поиск по уголку и Единая кнопка меню -->
+            <div class="flex items-center space-x-2 sm:space-x-4">
+                
+                <!-- Поле поиска -->
+                <div class="relative w-40 sm:w-64 md:w-72">
+                    <input type="text" id="searchInput" oninput="handleCyrillicSearch(this)" placeholder="Поиск по уголку..." 
+                           class="w-full pl-8 pr-3 py-1.5 rounded-full text-xs sm:text-sm text-gray-800 bg-white border border-transparent focus:outline-none focus:ring-2 focus:ring-white shadow-inner">
+                    <i data-lucide="search" class="w-4 h-4 text-gray-400 absolute left-2.5 top-2"></i>
+                    
+                    <!-- Выпадающее окно результатов поиска -->
+                    <div id="searchResults" class="hidden absolute left-0 right-0 top-11 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-80 overflow-y-auto p-2 space-y-1">
+                        <!-- Заполняется динамически -->
                     </div>
-                    <div>
-                        <h1 class="font-bold text-lg leading-tight md:text-xl">Электронный уголок охраны труда</h1>
-                        <p class="text-xs text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
-                    </div>
-                </a>
-                <button id="menuBtn" class="md:hidden p-2 rounded hover:bg-rzd-darkRed focus:outline-none">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </div>
+
+                <!-- Единая кнопка вызова меню (для ПК и телефонов) -->
+                <button id="menuToggleBtn" onclick="toggleMenu()" class="px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-lg flex items-center space-x-1.5 text-xs sm:text-sm font-semibold transition focus:outline-none border border-white/20">
+                    <i data-lucide="menu" class="w-5 h-5"></i>
+                    <span class="hidden sm:inline">Меню</span>
                 </button>
             </div>
-
-            <!-- Десктопная навигация по файлам -->
-            <nav class="hidden md:flex flex-wrap space-x-2 text-xs lg:text-sm font-medium">
-                <a href="telegrams.html" class="hover:text-red-200 transition font-bold bg-white/20 px-2 py-0.5 rounded">Телеграммы</a>
-                <a href="index.html" class="hover:text-red-200 transition px-1 py-0.5 text-red-200 font-bold">Главная</a>
-                <a href="first-aid.html" class="hover:text-red-200 transition px-1 py-0.5">Первая помощь</a>
-                <a href="siz.html" class="hover:text-red-200 transition px-1 py-0.5">СИЗ</a>
-                <a href="normative-docs.html" class="hover:text-red-200 transition px-1 py-0.5">Нормативы</a>
-                <a href="iot.html" class="hover:text-red-200 transition px-1 py-0.5">ИОТ</a>
-                <a href="schedules.html" class="hover:text-red-200 transition px-1 py-0.5">Графики</a>
-                <a href="anshlyagi.html" class="hover:text-red-200 transition px-1 py-0.5">Аншлаги</a>
-                <a href="tech-processes.html" class="hover:text-red-200 transition px-1 py-0.5">Техпроцессы</a>
-                <a href="sout.html" class="hover:text-red-200 transition font-bold bg-white/10 px-2 py-0.5 rounded">СОУТ</a>
-            </nav>
         </div>
 
-        <!-- Мобильное меню -->
-        <div id="mobileMenu" class="hidden md:hidden bg-rzd-darkRed px-4 pt-2 pb-4 space-y-2 border-t border-red-700">
-            <a href="telegrams.html" class="block py-2 hover:bg-rzd-red px-2 rounded font-bold">⚡ Оперативные телеграммы</a>
-            <a href="index.html" class="block py-2 hover:bg-rzd-red px-2 rounded font-semibold">Главная</a>
-            <a href="first-aid.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Первая помощь</a>
-            <a href="siz.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Нормы выдачи СИЗ</a>
-            <a href="normative-docs.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Нормативные документы</a>
-            <a href="lna.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Приказы и ЛНА ПЧ-13</a>
-            <a href="iot.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Инструкции по ОТ</a>
-            <a href="schedules.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Графики проверки знаний</a>
-            <a href="anshlyagi.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Информационные аншлаги</a>
-            <a href="tech-processes.html" class="block py-2 hover:bg-rzd-red px-2 rounded">Технологические процессы</a>
-            <a href="sout.html" class="block py-2 hover:bg-rzd-red px-2 rounded font-bold">СОУТ (Условия труда)</a>
-            <a href="ksotp.html" class="block py-2 hover:bg-rzd-red px-2 rounded">КСОТ-П</a>
-            <a href="med-commission.html" class="block py-2 hover:bg-rzd-red px-2 rounded">График медкомиссий</a>
+        <!-- Предупреждение об ограничении языка поиска -->
+        <div id="langNotice" class="hidden bg-amber-500 text-black text-[11px] font-bold text-center py-0.5 transition">
+            ⚠️ Поиск работает только на русской кириллице!
+        </div>
+
+        <!-- Плавное выпадающее меню (Единое для всех устройств) -->
+        <div id="dropdownMenu" class="bg-rzd-darkRed border-t border-red-700/80 shadow-2xl">
+            <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-xs sm:text-sm">
+                <a href="telegrams.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition font-bold text-yellow-300">
+                    <i data-lucide="zap" class="w-4 h-4"></i>
+                    <span>⚡ Оперативные телеграммы</span>
+                </a>
+                <a href="index.html" class="flex items-center space-x-2 p-2 bg-rzd-red/50 rounded transition font-bold text-white">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                    <span>Главная страница</span>
+                </a>
+                <a href="first-aid.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="heart-pulse" class="w-4 h-4"></i>
+                    <span>Оказание первой помощи</span>
+                </a>
+                <a href="siz.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Нормы выдачи СИЗ</span>
+                </a>
+                <a href="normative-docs.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="book-open" class="w-4 h-4"></i>
+                    <span>Нормативные документы</span>
+                </a>
+                <a href="lna.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="file-text" class="w-4 h-4"></i>
+                    <span>Приказы и ЛНА ПЧ-13</span>
+                </a>
+                <a href="iot.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="clipboard-list" class="w-4 h-4"></i>
+                    <span>Инструкции по ОТ</span>
+                </a>
+                <a href="schedules.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="calendar" class="w-4 h-4"></i>
+                    <span>Графики проверки знаний</span>
+                </a>
+                <a href="anshlyagi.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="image" class="w-4 h-4"></i>
+                    <span>Информационные аншлаги</span>
+                </a>
+                <a href="tech-processes.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="cpu" class="w-4 h-4"></i>
+                    <span>Технологические процессы</span>
+                </a>
+                <a href="sout.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition font-bold text-white">
+                    <i data-lucide="award" class="w-4 h-4"></i>
+                    <span>СОУТ (Условия труда)</span>
+                </a>
+                <a href="ksotp.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="check-square" class="w-4 h-4"></i>
+                    <span>КСОТ-П (Контроль)</span>
+                </a>
+                <a href="med-commission.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="stethoscope" class="w-4 h-4"></i>
+                    <span>График медкомиссий</span>
+                </a>
+            </div>
         </div>
     </header>
 
     <!-- Основной контент -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 pb-12 space-y-6">
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 md:p-6 space-y-6">
         
         <!-- Информационный баннер -->
         <div class="bg-white p-6 rounded-lg shadow-sm border-l-4 border-rzd-red flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -97,7 +188,7 @@
             </div>
         </div>
 
-        <!-- Навигационные карточки -->
+        <!-- Навигационные карточки блоков -->
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             
             <a href="telegrams.html" class="rzd-card bg-white p-6 rounded-lg shadow flex flex-col justify-between">
@@ -262,6 +353,7 @@
         </div>
     </main>
 
+    <!-- Подвал страницы -->
     <footer class="bg-rzd-gray text-white text-xs py-6 relative border-t-4 border-rzd-red mb-10">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div>
@@ -336,7 +428,7 @@
                     <path d="M 180 21 L 360 21 L 360 29.5 L 180 29.5 Z" fill="url(#rzdRedGrad)"/>
                     <path d="M 180 14 L 235 14 L 215 21 L 180 21 Z" fill="url(#rzdRedGrad)"/>
                     
-                    <!-- Надпись РЖД прямо на красной полосе первого вагона -->
+                    <!-- Надпись РЖД на красной полосе первого вагона -->
                     <text x="270" y="27.5" font-family="Arial, sans-serif" font-size="7.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">РЖД</text>
 
                     <rect x="235" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/>
@@ -395,11 +487,109 @@
         </div>
     </div>
 
-    <!-- Скрипты -->
+    <!-- Скрипты сайта -->
     <script>
+        // Инициализация иконок Lucide
         lucide.createIcons();
 
-        const trainContainer = document.getElementById('train-container');
+        // 1. Управление плавным выпадающим меню
+        function toggleMenu() {
+            const menu = document.getElementById('dropdownMenu');
+            menu.classList.toggle('open');
+        }
+
+        // Закрывать меню при клике вне его области
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('dropdownMenu');
+            const btn = document.getElementById('menuToggleBtn');
+            if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('open');
+            }
+        });
+
+        // 2. БАЗА ДАННЫХ ДЛЯ ПОИСКА ПО ВСЕМУ УГОЛКУ
+        const cornerSearchDatabase = [
+            { title: "Оперативные телеграммы ОАО РЖД", url: "telegrams.html", desc: "Срочные предупреждения, извещения, телеграммы ЦДИ и ПЧ", keywords: "телеграмма извещение предупреждение травматизм цди" },
+            { title: "Телеграмма № 345/ЦДИ (Путевой бензоинструмент)", url: "telegrams.html", desc: "Меры по предупреждению травматизма при работе с бензоинструментом", keywords: "бензоинструмент бензопила авария травма" },
+            { title: "Телеграмма № 112/ПЧ (Человек на пути)", url: "telegrams.html", desc: "Регламент переговоров при движении поездов и работе на путях", keywords: "человек на пути сигналист проход регламент" },
+            { title: "Инструкция по оказанию первой помощи", url: "first-aid.html", desc: "Алгоритмы спасения, остановка кровотечений, реанимация", keywords: "первая помощь травма жгут кровотечение ожог перелом" },
+            { title: "Первая помощь при электротравмах", url: "first-aid.html", desc: "Освобождение от действия тока, реанимация, вызов 112", keywords: "электричество ток ожог реанимация 112" },
+            { title: "Нормы выдачи СИЗ (Монтер пути)", url: "siz.html", desc: "Костюм сигнальный, каска, ботинки с защитным носком, перчатки", keywords: "сиз монтер пути спецодежда ботинки каска" },
+            { title: "Нормы выдачи СИЗ (Сигналист и Бригадир)", url: "siz.html", desc: "Сигнальный костюм 3 класса, плащ от воды, сапоги юфтевые", keywords: "сигналист бригадир дорожный мастер плащ сапоги" },
+            { title: "Постановление Правительства № 2464", url: "normative-docs.html", desc: "Порядок обучения по охране труда и проверки знаний", keywords: "постановление 2464 обучение проверка знаний" },
+            { title: "Трудовой кодекс РФ (Раздел X Охрана труда)", url: "normative-docs.html", desc: "Права и обязанности работника и работодателя в сфере ОТ", keywords: "трудовой кодекс тк рф законы права" },
+            { title: "Приказ Минздрава № 29н (Медосмотры)", url: "normative-docs.html", desc: "Порядок проведения обязательных медицинских осмотров", keywords: "29н медосмотр врач больница клиника" },
+            { title: "Приказы и ЛНА ПЧ-13", url: "lna.html", desc: "Приказ № 102/ПЧ-13 о назначении ответственных лиц за ОТ", keywords: "приказ лна ответственные лица пч13" },
+            { title: "Инструкция ИОТ-ПЧ13-001-2023 (Монтер пути)", url: "iot.html", desc: "Инструкция по охране труда для монтера пути ПЧ-13", keywords: "иот инструкция монтер пути правила" },
+            { title: "Инструкция по работе с бензоинструментом", url: "iot.html", desc: "Безопасность при эксплуатации путевого бензоинструмента", keywords: "бензоинструмент пила шуруповерт мотор" },
+            { title: "Графики проверки знаний по ОТ и ЭБ", url: "schedules.html", desc: "Расписание экзаменов по линейным участкам (ЛУ-1 - ЛУ-18, ППР, УД)", keywords: "график экзамен проверка знаний электробезопасность от" },
+            { title: "Информационные аншлаги и плакаты", url: "anshlyagi.html", desc: "Наглядные схемы ограждения мест работ и служебных проходов", keywords: "аншлаг плакат схема знак ограждение" },
+            { title: "Технологические процессы ПЧ-13", url: "tech-processes.html", desc: "Замена рельсовых плетей, выправка пути домкратами", keywords: "техпроцесс карта выправка плеть ремонт" },
+            { title: "СОУТ (Специальная оценка условий труда)", url: "sout.html", desc: "Классы условий труда (3.1, 3.2, 2.0) и льготы работников ПЧ-13", keywords: "соут условия труда вредность класс компенсации" },
+            { title: "КСОТ-П (3 ступени контроля)", url: "ksotp.html", desc: "Производственный контроль, бланки ведомостей несоответствий", keywords: "ксотп контроль ступень ведомость журнал осмотр" },
+            { title: "График медицинских комиссий и ПФО", url: "med-commission.html", desc: "Сроки прохождения периодических медосмотров и психоосвидетельствования", keywords: "медкомиссия пфо медосмотр график больница направление" }
+        ];
+
+        // 3. ОБРАБОТКА ПОИСКА ТОЛЬКО НА КИРИЛЛИЦЕ
+        function handleCyrillicSearch(input) {
+            const resultsBox = document.getElementById('searchResults');
+            const langNotice = document.getElementById('langNotice');
+            let val = input.value;
+
+            // Проверка на латинские буквы
+            if (/[a-zA-Z]/.test(val)) {
+                langNotice.classList.remove('hidden');
+                // Удаляем латинские буквы, оставляем только кириллицу, цифры и пробелы
+                val = val.replace(/[a-zA-Z]/g, '');
+                input.value = val;
+                setTimeout(() => langNotice.classList.add('hidden'), 2500);
+            } else {
+                langNotice.classList.add('hidden');
+            }
+
+            const query = val.toLowerCase().trim();
+
+            if (query.length < 2) {
+                resultsBox.classList.add('hidden');
+                resultsBox.innerHTML = '';
+                return;
+            }
+
+            // Поиск совпадений в базе
+            const filtered = cornerSearchDatabase.filter(item => 
+                item.title.toLowerCase().includes(query) ||
+                item.desc.toLowerCase().includes(query) ||
+                item.keywords.toLowerCase().includes(query)
+            );
+
+            if (filtered.length === 0) {
+                resultsBox.innerHTML = `<div class="p-3 text-xs text-gray-500 text-center">Ничего не найдено по запросу «<b>${query}</b>». Попробуйте сформулировать иначе.</div>`;
+            } else {
+                resultsBox.innerHTML = filtered.map(item => `
+                    <a href="${item.url}" class="block p-2 hover:bg-red-50 rounded transition border-b border-gray-100 last:border-0 group">
+                        <div class="font-bold text-xs text-rzd-red group-hover:underline flex items-center justify-between">
+                            <span>${item.title}</span>
+                            <i data-lucide="chevron-right" class="w-3.5 h-3.5 text-gray-400 group-hover:text-rzd-red"></i>
+                        </div>
+                        <div class="text-[11px] text-gray-600 mt-0.5 line-clamp-1">${item.desc}</div>
+                    </a>
+                `).join('');
+                lucide.createIcons();
+            }
+
+            resultsBox.classList.remove('hidden');
+        }
+
+        // Закрывать окно поиска при клике снаружи
+        document.addEventListener('click', (e) => {
+            const searchBox = document.getElementById('searchResults');
+            const searchInput = document.getElementById('searchInput');
+            if (searchBox && !searchBox.contains(e.target) && !searchInput.contains(e.target)) {
+                searchBox.classList.add('hidden');
+            }
+        });
+
+        // 4. Движение поезда при прокрутке
         function updateTrainPosition() {
             if (!trainContainer) return;
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
@@ -419,13 +609,6 @@
         window.addEventListener('scroll', updateTrainPosition);
         window.addEventListener('resize', updateTrainPosition);
         updateTrainPosition();
-    </script>
-
-    <script>
-        lucide.createIcons();
-        document.getElementById('menuBtn').addEventListener('click', () => {
-            document.getElementById('mobileMenu').classList.toggle('hidden');
-        });
     </script>
 </body>
 </html>
