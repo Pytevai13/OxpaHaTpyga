@@ -34,11 +34,13 @@
             transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
                         opacity 0.3s ease, 
                         transform 0.3s ease;
+            pointer-events: none;
         }
         #dropdownMenu.open {
             max-height: 700px;
             opacity: 1;
             transform: translateY(0);
+            pointer-events: auto;
         }
 
         /* Анимированный рельсовый путь */
@@ -87,7 +89,7 @@
                 </div>
             </a>
 
-            <!-- Правая часть: Поиск по уголку и Единая кнопка меню -->
+            <!-- Поиск по уголку и Единая кнопка меню -->
             <div class="flex items-center space-x-2 sm:space-x-4">
                 
                 <!-- Поле поиска -->
@@ -102,7 +104,7 @@
                     </div>
                 </div>
 
-                <!-- Единая кнопка вызова меню (для ПК и телефонов) -->
+                <!-- Единая кнопка вызова меню -->
                 <button id="menuToggleBtn" onclick="toggleMenu()" class="px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-lg flex items-center space-x-1.5 text-xs sm:text-sm font-semibold transition focus:outline-none border border-white/20">
                     <i data-lucide="menu" class="w-5 h-5"></i>
                     <span class="hidden sm:inline">Меню</span>
@@ -115,7 +117,7 @@
             ⚠️ Поиск работает только на русской кириллице!
         </div>
 
-        <!-- Плавное выпадающее меню (Единое для всех устройств) -->
+        <!-- Плавное выпадающее меню -->
         <div id="dropdownMenu" class="bg-rzd-darkRed border-t border-red-700/80 shadow-2xl">
             <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-xs sm:text-sm">
                 <a href="telegrams.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition font-bold text-yellow-300">
@@ -428,7 +430,7 @@
                     <path d="M 180 21 L 360 21 L 360 29.5 L 180 29.5 Z" fill="url(#rzdRedGrad)"/>
                     <path d="M 180 14 L 235 14 L 215 21 L 180 21 Z" fill="url(#rzdRedGrad)"/>
                     
-                    <!-- Надпись РЖД на красной полосе первого вагона -->
+                    <!-- Надпись РЖД прямо на красной полосе первого вагона -->
                     <text x="270" y="27.5" font-family="Arial, sans-serif" font-size="7.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">РЖД</text>
 
                     <rect x="235" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/>
@@ -502,7 +504,7 @@
         document.addEventListener('click', (e) => {
             const menu = document.getElementById('dropdownMenu');
             const btn = document.getElementById('menuToggleBtn');
-            if (menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+            if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
                 menu.classList.remove('open');
             }
         });
@@ -539,7 +541,6 @@
             // Проверка на латинские буквы
             if (/[a-zA-Z]/.test(val)) {
                 langNotice.classList.remove('hidden');
-                // Удаляем латинские буквы, оставляем только кириллицу, цифры и пробелы
                 val = val.replace(/[a-zA-Z]/g, '');
                 input.value = val;
                 setTimeout(() => langNotice.classList.add('hidden'), 2500);
@@ -555,7 +556,6 @@
                 return;
             }
 
-            // Поиск совпадений в базе
             const filtered = cornerSearchDatabase.filter(item => 
                 item.title.toLowerCase().includes(query) ||
                 item.desc.toLowerCase().includes(query) ||
@@ -589,9 +589,11 @@
             }
         });
 
-        // 4. Движение поезда при прокрутке
+        // 4. НАДЕЖНОЕ ДВИЖЕНИЕ ПОЕЗДА ПРИ СКРОЛЛЕ
         function updateTrainPosition() {
-            if (!trainContainer) return;
+            const train = document.getElementById('train-container');
+            if (!train) return;
+            
             const scrollTop = window.scrollY || document.documentElement.scrollTop;
             const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
             const scrollPercent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
@@ -603,12 +605,14 @@
             const endX = windowWidth - 110;
 
             const currentX = startX + (endX - startX) * scrollPercent;
-            trainContainer.style.transform = `translateX(${currentX}px)`;
+            train.style.transform = `translateX(${currentX}px)`;
         }
 
+        // Запуск движения при загрузке страницы, изменении размера окна и прокрутке
+        window.addEventListener('DOMContentLoaded', updateTrainPosition);
+        window.addEventListener('load', updateTrainPosition);
         window.addEventListener('scroll', updateTrainPosition);
         window.addEventListener('resize', updateTrainPosition);
-        updateTrainPosition();
     </script>
 </body>
 </html>
