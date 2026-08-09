@@ -1,1 +1,364 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Управление складом СИЗ — Уголок ОТ ПЧ-13</title>
+    <meta name="theme-color" content="#E21A1A">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23E21A1A'/><text x='50%' y='58%' font-family='Arial, sans-serif' font-weight='900' font-size='38' fill='white' text-anchor='middle' dominant-baseline='middle' letter-spacing='-1'>РЖД</text><rect x='20' y='75' width='60' height='4' rx='2' fill='white'/></svg>">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { rzd: { red: '#E21A1A', darkRed: '#B81414', gray: '#212529', lightGray: '#F4F5F7' } }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }
+        #dropdownMenu {
+            max-height: 0; opacity: 0; overflow: hidden; transform: translateY(-8px);
+            transition: max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease, transform 0.3s ease;
+            pointer-events: none;
+        }
+        #dropdownMenu.open { max-height: 700px; opacity: 1; transform: translateY(0); pointer-events: auto; }
+        .rail-track-pattern {
+            background: repeating-linear-gradient(90deg, #64748B 0px, #64748B 3px, transparent 3px, transparent 18px);
+            border-top: 2px solid #475569; border-bottom: 2px solid #334155;
+        }
+        #train-container { will-change: transform; transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }
+        @keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+        .wheel-rotate { transform-origin: center; transform-box: fill-box; animation: wheel-spin 0.6s linear infinite; }
+    </style>
+</head>
+<body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased overflow-x-hidden pb-20">
 
+    <!-- Шапка сайта -->
+    <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 sm:gap-3">
+            <div class="flex items-center justify-between w-full md:w-auto">
+                <a href="index.html" class="flex items-center space-x-2.5 sm:space-x-3 shrink-0">
+                    <div class="bg-white text-rzd-red px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-lg font-extrabold text-lg sm:text-xl shadow flex items-center justify-center tracking-tighter">РЖД</div>
+                    <div>
+                        <h1 class="font-bold text-sm sm:text-base md:text-lg leading-tight">Электронный уголок охраны труда</h1>
+                        <p class="text-[10px] sm:text-[11px] text-red-100 opacity-90">Владивостокская дистанция пути ПЧ-13</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="flex items-center space-x-2 w-full md:w-auto mt-1 md:mt-0">
+                <div class="relative flex-1 md:w-64 lg:w-72">
+                    <input type="text" id="searchInput" oninput="handleCyrillicSearch(this)" placeholder="Поиск по уголку..." 
+                           class="w-full pl-8 pr-3 py-1.5 rounded-full text-xs sm:text-sm text-gray-800 bg-white border border-transparent focus:outline-none focus:ring-2 focus:ring-white shadow-inner">
+                    <i data-lucide="search" class="w-3.5 h-3.5 sm:w-4 sm:h-4 text-gray-400 absolute left-2.5 top-2.5 sm:top-2"></i>
+                    <div id="searchResults" class="hidden absolute left-0 right-0 top-10 sm:top-11 bg-white rounded-lg shadow-xl border border-gray-200 z-50 max-h-80 overflow-y-auto p-2 space-y-1 text-left"></div>
+                </div>
+
+                <button id="menuToggleBtn" onclick="toggleMenu()" class="px-3 py-1.5 bg-white/15 hover:bg-white/25 rounded-lg flex items-center justify-center space-x-1.5 text-xs sm:text-sm font-semibold transition focus:outline-none border border-white/20 shrink-0">
+                    <i data-lucide="menu" class="w-4 h-4 sm:w-5 sm:h-5"></i>
+                    <span>Меню</span>
+                </button>
+            </div>
+        </div>
+
+        <div id="langNotice" class="hidden bg-amber-500 text-black text-[11px] font-bold text-center py-0.5 transition">⚠️ Поиск работает только на русской кириллице!</div>
+
+        <div id="dropdownMenu" class="bg-rzd-darkRed border-t border-red-700/80 shadow-2xl">
+            <div class="max-w-7xl mx-auto px-4 py-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 text-xs sm:text-sm">
+                <a href="siz.html" class="flex items-center space-x-2 p-2 bg-rzd-red/50 rounded transition font-bold text-white">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i>
+                    <span>Нормы выдачи СИЗ и Склад</span>
+                </a>
+                <a href="index.html" class="flex items-center space-x-2 p-2 hover:bg-rzd-red rounded transition text-white">
+                    <i data-lucide="home" class="w-4 h-4"></i>
+                    <span>Главная страница</span>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Основной контент -->
+    <main class="flex-grow max-w-4xl w-full mx-auto p-4 md:p-6 space-y-6">
+        <nav class="flex items-center justify-between text-sm text-gray-600">
+            <a href="warehouse-stock.html" class="text-rzd-red hover:underline font-medium flex items-center">
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На к просмотру наличия
+            </a>
+            <span class="px-2.5 py-1 bg-red-100 text-rzd-red font-bold text-xs rounded-full">Режим кладовщика (Пароль принят)</span>
+        </nav>
+
+        <section class="bg-white p-6 rounded-xl shadow-md border-t-4 border-rzd-red space-y-6">
+            <div class="border-b pb-4">
+                <h2 class="text-2xl font-bold text-gray-900 flex items-center">
+                    <i data-lucide="edit-3" class="w-6 h-6 mr-2 text-rzd-red"></i>
+                    Введение данных поставок и учет остатков
+                </h2>
+                <p class="text-xs text-gray-500 mt-1">Изменяйте количество единиц на складе. При сохранении фиксируется точное время обновления.</p>
+            </div>
+
+            <!-- Панель выбора категории для редактирования -->
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-lg border">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">1. Выберите пол:</label>
+                    <select id="adminGender" onchange="loadAdminForm()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="мужской">Мужской</option>
+                        <option value="женский">Женский</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">2. Тип одежды / СИЗ:</label>
+                    <select id="adminCategory" onchange="loadAdminForm()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="Костюм сигнальный">Костюм сигнальный</option>
+                        <option value="Ботинки защитные">Ботинки юфтевые / с защитным носком</option>
+                        <option value="Каска защитная">Каска защитная</option>
+                        <option value="Перчатки / рукавицы">Перчатки / рукавицы</option>
+                        <option value="Плащ влагозащитный">Плащ влагозащитный</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">3. Размер:</label>
+                    <select id="adminSize" onchange="loadAdminForm()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="44-46">44-46 (M)</option>
+                        <option value="48-50" selected>48-50 (L)</option>
+                        <option value="52-54">52-54 (XL)</option>
+                        <option value="56-58">56-58 (XXL)</option>
+                        <option value="Универсальный">Универсальный / 42-45</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Редактируемая форма -->
+            <div class="p-6 bg-red-50/50 rounded-xl border-2 border-red-100 space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div>
+                        <span id="adminItemBadge" class="px-2.5 py-1 bg-red-100 text-rzd-red text-xs font-bold rounded-full">Параметр позиции</span>
+                        <h3 class="font-bold text-lg text-gray-900 mt-2">Редактирование количества единиц</h3>
+                    </div>
+                    <div class="w-full sm:w-48">
+                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Количество на складе (ед.):</label>
+                        <input type="number" id="adminQuantityInput" min="0" 
+                               class="w-full px-3 py-2 bg-white border-2 border-rzd-red rounded-lg font-bold text-lg text-center text-gray-900 focus:outline-none shadow-sm">
+                    </div>
+                </div>
+
+                <div class="text-xs text-gray-500" id="adminLastUpdateText">Последнее изменение: не сохранялось</div>
+
+                <!-- Кнопки управления -->
+                <div class="flex items-center justify-end space-x-3 pt-4 border-t border-red-200">
+                    <button onclick="cancelAdminEdit()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded-lg transition">
+                        Отменить
+                    </button>
+                    <button onclick="saveAdminChanges()" class="px-5 py-2 bg-rzd-red hover:bg-rzd-darkRed text-white text-xs font-semibold rounded-lg shadow transition flex items-center">
+                        <i data-lucide="save" class="w-4 h-4 mr-1.5"></i> Сохранить изменения
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Уведомление об успешном сохранении -->
+            <div id="successNotification" class="hidden p-3 bg-green-100 border border-green-300 text-green-800 text-xs font-semibold rounded-lg text-center transition">
+                ✅ Данные успешно сохранены и зафиксированы в системе!
+            </div>
+        </section>
+    </main>
+
+    <!-- Подвал сайта -->
+    <footer class="bg-rzd-gray text-white text-xs py-6 relative border-t-4 border-rzd-red mb-10">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <div>
+                <p class="font-bold text-sm">Владивостокская дистанция пути ПЧ-13</p>
+                <p class="text-gray-400 mt-1">Электронный уголок охраны труда © 2026</p>
+            </div>
+            <div class="text-gray-400">
+                <p>Телефон специалиста по ОТ: <span class="text-white font-medium">внутр. 45-768</span></p>
+                <p>Единая горячая линия ОАО «РЖД»: <span class="text-white font-medium">8-800-775-00-00</span></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Поезд РЖД Премиум внизу страницы -->
+    <div class="fixed bottom-0 left-0 w-full bg-slate-900/85 backdrop-blur-md overflow-hidden h-14 flex items-end border-t border-red-600/40 shadow-2xl z-40">
+        <div class="rail-track-pattern absolute bottom-1 left-0 w-full h-2.5 z-0 opacity-80"></div>
+        <div id="train-container" class="absolute bottom-1.5 left-0 z-10 flex items-end">
+            <svg width="640" height="46" viewBox="0 0 640 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <defs>
+                    <linearGradient id="bodyGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#94A3B8"/><stop offset="35%" stop-color="#64748B"/><stop offset="100%" stop-color="#334155"/></linearGradient>
+                    <linearGradient id="rzdRedGrad" x1="0" y1="0" x2="0" y2="1"><stop offset="0%" stop-color="#EF4444"/><stop offset="50%" stop-color="#E21A1A"/><stop offset="100%" stop-color="#991B1B"/></linearGradient>
+                    <linearGradient id="glassGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#38BDF8" stop-opacity="0.9"/><stop offset="60%" stop-color="#0284C7" stop-opacity="0.95"/><stop offset="100%" stop-color="#0C4A6E" stop-opacity="1"/></linearGradient>
+                    <linearGradient id="beamGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#FEF08A" stop-opacity="0.5"/><stop offset="100%" stop-color="#FEF08A" stop-opacity="0"/></linearGradient>
+                </defs>
+                <polygon points="605,24 640,16 640,36 605,28" fill="url(#beamGrad)"/>
+                <g id="car2">
+                    <rect x="10" y="14" width="160" height="20" rx="4" fill="url(#bodyGrad)"/><rect x="10" y="22" width="160" height="7.5" fill="url(#rzdRedGrad)"/><rect x="10" y="29.5" width="160" height="1" fill="#CBD5E1"/>
+                    <rect x="22" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="46" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="70" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="94" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="118" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="142" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/>
+                    <rect x="24" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="30" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="30" y1="32.5" x2="30" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="54" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="54" y1="32.5" x2="54" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                    <rect x="114" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="120" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="120" y1="32.5" x2="120" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="144" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="144" y1="32.5" x2="144" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                </g>
+                <rect x="170" y="16" width="10" height="17" rx="1" fill="#1E293B"/><line x1="173" y1="16" x2="173" y2="33" stroke="#475569" stroke-width="1"/><line x1="177" y1="16" x2="177" y2="33" stroke="#475569" stroke-width="1"/>
+                <g id="car1">
+                    <rect x="180" y="14" width="180" height="20" rx="4" fill="url(#bodyGrad)"/><path d="M 180 21 L 360 21 L 360 29.5 L 180 29.5 Z" fill="url(#rzdRedGrad)"/><path d="M 180 14 L 235 14 L 215 21 L 180 21 Z" fill="url(#rzdRedGrad)"/>
+                    <text x="270" y="27.5" font-family="Arial, sans-serif" font-size="7.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">РЖД</text>
+                    <rect x="235" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/><rect x="259" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/><rect x="295" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/><rect x="319" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/>
+                    <rect x="194" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="200" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="200" y1="32.5" x2="200" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="224" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="224" y1="32.5" x2="224" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                    <rect x="314" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="320" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="320" y1="32.5" x2="320" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="344" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="344" y1="32.5" x2="344" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                </g>
+                <rect x="360" y="16" width="10" height="17" rx="1" fill="#1E293B"/><line x1="363" y1="16" x2="363" y2="33" stroke="#475569" stroke-width="1"/><line x1="367" y1="16" x2="367" y2="33" stroke="#475569" stroke-width="1"/>
+                <g id="headLocomotive">
+                    <path d="M 370 34 L 370 12 C 370 12, 530 10, 560 14 C 585 18, 600 24, 605 34 Z" fill="url(#bodyGrad)"/><path d="M 440 11.5 C 500 11.5, 545 13, 570 18 C 590 22, 602 27, 605 34 L 440 34 Z" fill="url(#rzdRedGrad)"/><path d="M 525 12 C 555 13, 580 18, 595 24 L 590 27 C 575 22, 550 17, 520 16 Z" fill="#FFFFFF"/>
+                    <text x="480" y="24" font-family="Arial, sans-serif" font-size="7" font-weight="900" fill="#FFFFFF" letter-spacing="1">РЖД</text>
+                    <path d="M 545 15 C 565 17, 578 21, 584 25 L 565 25 C 555 22, 545 19, 538 19 Z" fill="url(#glassGrad)"/><path d="M 545 15 C 565 17, 578 21, 584 25 L 565 25 C 555 22, 545 19, 538 19 Z" stroke="#0F172A" stroke-width="0.8"/>
+                    <rect x="390" y="16" width="22" height="6" rx="1" fill="url(#glassGrad)"/><rect x="420" y="16" width="22" height="6" rx="1" fill="url(#glassGrad)"/>
+                    <ellipse cx="602" cy="27" rx="2.5" ry="3.5" fill="#FEF08A"/><ellipse cx="602" cy="27" rx="1.2" ry="1.8" fill="#FFFFFF"/><circle cx="594" cy="31" r="1.5" fill="#FCA5A5"/>
+                    <path d="M 585 34 L 606 34 L 602 38 L 575 38 Z" fill="#0F172A"/>
+                    <path d="M 400 12 L 415 4 L 440 4 L 455 12" stroke="#475569" stroke-width="1.8" fill="none"/><line x1="410" y1="4" x2="445" y2="4" stroke="#CBD5E1" stroke-width="2"/>
+                    <path d="M 490 11 L 505 4 L 525 4 L 535 11" stroke="#475569" stroke-width="1.8" fill="none"/><line x1="500" y1="4" x2="530" y2="4" stroke="#CBD5E1" stroke-width="2"/>
+                    <rect x="384" y="32" width="56" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="392" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="392" y1="32.5" x2="392" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="412" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="412" y1="32.5" x2="412" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="432" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="432" y1="32.5" x2="432" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                    <rect x="514" y="32" width="56" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="522" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="522" y1="32.5" x2="522" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="542" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="542" y1="32.5" x2="542" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="562" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="562" y1="32.5" x2="562" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                </g>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Скрипты админ-панели -->
+    <script>
+        lucide.createIcons();
+
+        function toggleMenu() {
+            document.getElementById('dropdownMenu').classList.toggle('open');
+        }
+
+        document.addEventListener('click', (e) => {
+            const menu = document.getElementById('dropdownMenu');
+            const btn = document.getElementById('menuToggleBtn');
+            if (menu && menu.classList.contains('open') && !menu.contains(e.target) && !btn.contains(e.target)) {
+                menu.classList.remove('open');
+            }
+        });
+
+        // Загрузка инвентаря
+        async function loadInventoryData() {
+            try {
+                const response = await fetch('inventory.json');
+                if (!response.ok) throw new Error('Файл не найден');
+                const text = await response.text();
+                if (!text.trim()) return getDefaultInventory();
+                return JSON.parse(text);
+            } catch (err) {
+                return getDefaultInventory();
+            }
+        }
+
+        function getDefaultInventory() {
+            return {
+                "мужской": {
+                    "Костюм сигнальный": { "44-46": {qty: 15, updated: "01.08.2026 10:00"}, "48-50": {qty: 24, updated: "01.08.2026 10:00"}, "52-54": {qty: 10, updated: "01.08.2026 10:00"}, "56-58": {qty: 5, updated: "01.08.2026 10:00"} },
+                    "Ботинки защитные": { "44-46": {qty: 8, updated: "02.08.2026 11:30"}, "48-50": {qty: 18, updated: "02.08.2026 11:30"}, "52-54": {qty: 12, updated: "02.08.2026 11:30"}, "56-58": {qty: 4, updated: "02.08.2026 11:30"} },
+                    "Каска защитная": { "Универсальный": {qty: 45, updated: "03.08.2026 09:15"} },
+                    "Перчатки / рукавицы": { "Универсальный": {qty: 150, updated: "03.08.2026 09:15"} },
+                    "Плащ влагозащитный": { "48-50": {qty: 7, updated: "03.08.2026 09:15"}, "52-54": {qty: 9, updated: "03.08.2026 09:15"} }
+                },
+                "женский": {
+                    "Костюм сигнальный": { "44-46": {qty: 12, updated: "01.08.2026 10:00"}, "48-50": {qty: 14, updated: "01.08.2026 10:00"} },
+                    "Ботинки защитные": { "44-46": {qty: 6, updated: "02.08.2026 11:30"}, "48-50": {qty: 8, updated: "02.08.2026 11:30"} },
+                    "Каска защитная": { "Универсальный": {qty: 20, updated: "03.08.2026 09:15"} },
+                    "Перчатки / рукавицы": { "Универсальный": {qty: 80, updated: "03.08.2026 09:15"} },
+                    "Плащ влагозащитный": { "44-46": {qty: 5, updated: "03.08.2026 09:15"} }
+                }
+            };
+        }
+
+        let currentInventory = {};
+
+        async function loadAdminForm() {
+            const gender = document.getElementById('adminGender').value;
+            const category = document.getElementById('adminCategory').value;
+            const size = document.getElementById('adminSize').value;
+
+            document.getElementById('adminItemBadge').textContent = `${gender.toUpperCase()} • ${category} • ${size}`;
+
+            if (Object.keys(currentInventory).length === 0) {
+                currentInventory = await loadInventoryData();
+            }
+
+            let qty = 0;
+            let updated = "Еще не обновлялось";
+
+            if (currentInventory[gender] && currentInventory[gender][category] && currentInventory[gender][category][size]) {
+                qty = currentInventory[gender][category][size].qty || 0;
+                updated = currentInventory[gender][category][size].updated || "Не указано";
+            }
+
+            document.getElementById('adminQuantityInput').value = qty;
+            document.getElementById('adminLastUpdateText').textContent = `Последнее изменение: ${updated}`;
+        }
+
+        async function saveAdminChanges() {
+            const gender = document.getElementById('adminGender').value;
+            const category = document.getElementById('adminCategory').value;
+            const size = document.getElementById('adminSize').value;
+            const newQty = parseInt(document.getElementById('adminQuantityInput').value, 10) || 0;
+
+            if (!currentInventory[gender]) currentInventory[gender] = {};
+            if (!currentInventory[gender][category]) currentInventory[gender][category] = {};
+
+            // Формируем красивую дату и время сохранения
+            const now = new Date();
+            const dateStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
+            const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+            const fullDateTime = `${dateStr} в ${timeStr}`;
+
+            currentInventory[gender][category][size] = {
+                qty: newQty,
+                updated: fullDateTime
+            };
+
+            document.getElementById('adminLastUpdateText').textContent = `Последнее изменение: ${fullDateTime}`;
+            
+            // Уведомление
+            const notif = document.getElementById('successNotification');
+            notif.classList.remove('hidden');
+            setTimeout(() => notif.classList.add('hidden'), 3000);
+
+            // В реальной среде здесь может быть отправка POST-запроса на сервер для перезаписи inventory.json.
+            // Для работы внутри статического сайта сохраняем также в localStorage для мгновенной синхронизации со страницей наличия.
+            localStorage.setItem('rzd_inventory_cache', JSON.stringify(currentInventory));
+        }
+
+        function cancelAdminEdit() {
+            loadAdminForm();
+        }
+
+        window.addEventListener('DOMContentLoaded', () => {
+            // Проверка кэша из localStorage если кладовщик уже сохранял до этого
+            const cached = localStorage.getItem('rzd_inventory_cache');
+            if (cached) {
+                try { currentInventory = JSON.parse(cached); } catch(e){}
+            }
+            loadAdminForm();
+        });
+
+        // Движение поезда
+        function updateTrainPosition() {
+            const train = document.getElementById('train-container');
+            if (!train) return;
+            const scrollTop = window.scrollY || document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = scrollHeight > 0 ? scrollTop / scrollHeight : 0;
+            const trainWidth = 640;
+            const windowWidth = window.innerWidth;
+            const startX = -trainWidth + 90;
+            const endX = windowWidth - 110;
+            const currentX = startX + (endX - startX) * scrollPercent;
+            train.style.transform = `translateX(${currentX}px)`;
+        }
+
+        window.addEventListener('load', updateTrainPosition);
+        window.addEventListener('scroll', updateTrainPosition);
+        window.addEventListener('resize', updateTrainPosition);
+    </script>
+</body>
+</html>
