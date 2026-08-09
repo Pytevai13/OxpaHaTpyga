@@ -30,7 +30,7 @@
         #dropdownMenu.open { max-height: 700px; opacity: 1; transform: translateY(0); pointer-events: auto; }
         .rail-track-pattern {
             background: repeating-linear-gradient(90deg, #64748B 0px, #64748B 3px, transparent 3px, transparent 18px);
-            border-top: 2px solid #475569; border-bottom: 2px solid #334155;
+            border-top: 2px solid #374151; border-bottom: 2px solid #374151;
         }
         #train-container { will-change: transform; transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }
         @keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -98,18 +98,19 @@
                         <i data-lucide="boxes" class="w-6 h-6 mr-2 text-rzd-red"></i>
                         Проверка наличия СИЗ на складе ПЧ-13
                     </h2>
-                    <p class="text-xs text-gray-500 mt-1">Выберите параметры для отображения актуального остатка по позициям</p>
+                    <p class="text-xs text-gray-500 mt-1">Выберите пол, тип и размер для отображения остатка и QR-кода</p>
                 </div>
                 <a href="warehouse-admin.html" class="inline-flex items-center justify-center px-3.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold text-xs rounded-lg transition shrink-0">
                     <i data-lucide="lock" class="w-3.5 h-3.5 mr-1.5 text-rzd-red"></i> Вход для кладовщика
                 </a>
             </div>
 
-            <!-- Панель фильтров -->
+            <!-- Панель фильтров (пустые при загрузке) -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-lg border">
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">1. Выберите пол:</label>
-                    <select id="filterGender" onchange="updateStockView()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzD-red">
+                    <select id="filterGender" onchange="onStockFilterChange()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="" disabled selected>-- Выберите пол --</option>
                         <option value="мужской">Мужской</option>
                         <option value="женский">Женский</option>
                     </select>
@@ -117,23 +118,24 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">2. Тип одежды / СИЗ:</label>
-                    <select id="filterCategory" onchange="updateStockView()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
-                        <option value="Костюм сигнальный">Костюм сигнальный</option>
-                        <option value="Ботинки защитные">Ботинки юфтевые / с защитным носком</option>
+                    <select id="filterCategory" onchange="onStockCategoryChange()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="" disabled selected>-- Выберите тип --</option>
+                        <option value="Костюм летний">Костюм летний</option>
+                        <option value="Костюм зимний">Костюм зимний</option>
+                        <option value="Обувь летняя">Обувь летняя</option>
+                        <option value="Обувь зимняя">Обувь зимняя</option>
+                        <option value="Сапоги резиновые">Сапоги резиновые</option>
                         <option value="Каска защитная">Каска защитная</option>
-                        <option value="Перчатки / рукавицы">Перчатки / рукавицы</option>
-                        <option value="Плащ влагозащитный">Плащ влагозащитный</option>
+                        <option value="Очки защитные">Очки защитные</option>
+                        <option value="Плащ-дождевик">Плащ-дождевик</option>
+                        <option value="Костюм антимоскитный">Костюм антимоскитный</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">3. Размер:</label>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">3. Размер / Ростовка:</label>
                     <select id="filterSize" onchange="updateStockView()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
-                        <option value="44-46">44-46 (M)</option>
-                        <option value="48-50" selected>48-50 (L)</option>
-                        <option value="52-54">52-54 (XL)</option>
-                        <option value="56-58">56-58 (XXL)</option>
-                        <option value="Универсальный">Универсальный / 42-45</option>
+                        <option value="" disabled selected>-- Сначала выберите тип --</option>
                     </select>
                 </div>
             </div>
@@ -141,15 +143,17 @@
             <!-- Информационная карточка результата -->
             <div id="stockResultCard" class="p-6 bg-red-50/50 rounded-xl border-2 border-red-100 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="space-y-2 text-center md:text-left flex-1">
-                    <span id="itemTitleBadge" class="px-2.5 py-1 bg-red-100 text-rzd-red text-xs font-bold rounded-full">Мужской • Костюм сигнальный • 48-50</span>
-                    <div class="text-4xl font-extrabold text-gray-900 mt-2" id="stockQuantityValue">0 ед.</div>
-                    <p class="text-xs text-gray-600" id="stockUpdateInfo">Последнее обновление данных: нет информации</p>
+                    <span id="itemTitleBadge" class="px-2.5 py-1 bg-red-100 text-rzd-red text-xs font-bold rounded-full">Выберите параметры выше</span>
+                    <div class="text-4xl font-extrabold text-gray-900 mt-2" id="stockQuantityValue">-- ед.</div>
+                    <p class="text-xs text-gray-600" id="stockUpdateInfo">Статус: ожидает выбора параметров</p>
                 </div>
 
                 <!-- Блок с QR-кодом -->
                 <div class="flex flex-col items-center bg-white p-3 rounded-lg shadow-sm border shrink-0">
-                    <div id="qrcode" class="w-28 h-28 flex items-center justify-center"></div>
-                    <span class="text-[10px] text-gray-400 mt-1 font-mono">QR параметров</span>
+                    <div id="qrcode" class="w-28 h-28 flex items-center justify-center">
+                        <span class="text-[10px] text-gray-400 text-center">QR-код</span>
+                    </div>
+                    <span class="text-[10px] text-gray-400 mt-1 font-mono">Параметры СИЗ</span>
                 </div>
             </div>
         </section>
@@ -185,7 +189,7 @@
                     <rect x="10" y="14" width="160" height="20" rx="4" fill="url(#bodyGrad)"/><rect x="10" y="22" width="160" height="7.5" fill="url(#rzdRedGrad)"/><rect x="10" y="29.5" width="160" height="1" fill="#CBD5E1"/>
                     <rect x="22" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="46" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="70" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="94" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="118" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/><rect x="142" y="16" width="18" height="5" rx="1" fill="url(#glassGrad)"/>
                     <rect x="24" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="30" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="30" y1="32.5" x2="30" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="54" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="54" y1="32.5" x2="54" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
-                    <rect x="114" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="120" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="120" y1="32.5" x2="120" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="144" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="144" y1="32.5" x2="144" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
+                    <rect x="114" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="120" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="120" y1="32.5" x2="120" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="144" cy="37" r="4.5" fill="#0F172A" stroke="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="144" y1="32.5" x2="144" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
                 </g>
                 <rect x="170" y="16" width="10" height="17" rx="1" fill="#1E293B"/><line x1="173" y1="16" x2="173" y2="33" stroke="#475569" stroke-width="1"/><line x1="177" y1="16" x2="177" y2="33" stroke="#475569" stroke-width="1"/>
                 <g id="car1">
@@ -212,7 +216,7 @@
         </div>
     </div>
 
-    <!-- Скрипты складской логики -->
+    <!-- Скрипты складской проверки -->
     <script>
         lucide.createIcons();
 
@@ -228,36 +232,59 @@
             }
         });
 
-        // Загрузка данных из inventory.json с обработкой пустого файла
         async function loadInventoryData() {
             try {
+                // Сначала проверяем локальный кэш (если кладовщик только что сохранил изменения)
+                const cached = localStorage.getItem('rzd_inventory_cache');
+                if (cached) {
+                    return JSON.parse(cached);
+                }
                 const response = await fetch('inventory.json');
-                if (!response.ok) throw new Error('Файл не найден');
+                if (!response.ok) throw new Error();
                 const text = await response.text();
-                if (!text.trim()) return getDefaultInventory(); // Если файл пустой
+                if (!text.trim()) return {};
                 return JSON.parse(text);
             } catch (err) {
-                return getDefaultInventory(); // Резервные дефолтные данные, если файл еще не заполнен
+                return {};
             }
         }
 
-        function getDefaultInventory() {
-            return {
-                "мужской": {
-                    "Костюм сигнальный": { "44-46": {qty: 15, updated: "01.08.2026 10:00"}, "48-50": {qty: 24, updated: "01.08.2026 10:00"}, "52-54": {qty: 10, updated: "01.08.2026 10:00"}, "56-58": {qty: 5, updated: "01.08.2026 10:00"} },
-                    "Ботинки защитные": { "44-46": {qty: 8, updated: "02.08.2026 11:30"}, "48-50": {qty: 18, updated: "02.08.2026 11:30"}, "52-54": {qty: 12, updated: "02.08.2026 11:30"}, "56-58": {qty: 4, updated: "02.08.2026 11:30"} },
-                    "Каска защитная": { "Универсальный": {qty: 45, updated: "03.08.2026 09:15"} },
-                    "Перчатки / рукавицы": { "Универсальный": {qty: 150, updated: "03.08.2026 09:15"} },
-                    "Плащ влагозащитный": { "48-50": {qty: 7, updated: "03.08.2026 09:15"}, "52-54": {qty: 9, updated: "03.08.2026 09:15"} }
-                },
-                "женский": {
-                    "Костюм сигнальный": { "44-46": {qty: 12, updated: "01.08.2026 10:00"}, "48-50": {qty: 14, updated: "01.08.2026 10:00"} },
-                    "Ботинки защитные": { "44-46": {qty: 6, updated: "02.08.2026 11:30"}, "48-50": {qty: 8, updated: "02.08.2026 11:30"} },
-                    "Каска защитная": { "Универсальный": {qty: 20, updated: "03.08.2026 09:15"} },
-                    "Перчатки / рукавицы": { "Универсальный": {qty: 80, updated: "03.08.2026 09:15"} },
-                    "Плащ влагозащитный": { "44-46": {qty: 5, updated: "03.08.2026 09:15"} }
+        function onStockCategoryChange() {
+            const category = document.getElementById('filterCategory').value;
+            const sizeSelect = document.getElementById('filterSize');
+            sizeSelect.innerHTML = '<option value="" disabled selected>-- Выберите размер --</option>';
+
+            let sizesList = [];
+
+            if (category.includes('обувь') || category.includes('Сапоги')) {
+                for (let i = 36; i <= 48; i++) {
+                    sizesList.push(String(i));
                 }
-            };
+            } else if (category.includes('Каска') || category.includes('Очки')) {
+                sizesList.push('Универсальный');
+            } else {
+                const rusSizes = ['80-86', '88-94', '96-102', '104-110', '112-118', '120-126', '128-134'];
+                const heights = ['156-162', '164-170', '172-178', '180-186', '188-194', '196-202', '204-210'];
+                
+                rusSizes.forEach(sz => {
+                    heights.forEach(ht => {
+                        sizesList.push(`${sz} / ${ht}`);
+                    });
+                });
+            }
+
+            sizesList.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                sizeSelect.appendChild(opt);
+            });
+
+            updateStockView();
+        }
+
+        function onStockFilterChange() {
+            updateStockView();
         }
 
         async function updateStockView() {
@@ -265,22 +292,34 @@
             const category = document.getElementById('filterCategory').value;
             const size = document.getElementById('filterSize').value;
 
-            document.getElementById('itemTitleBadge').textContent = `${gender.toUpperCase()} • ${category} • Размер: ${size}`;
+            const badge = document.getElementById('itemTitleBadge');
+            const qtyVal = document.getElementById('stockQuantityValue');
+            const updateInfo = document.getElementById('stockUpdateInfo');
+            const qrContainer = document.getElementById('qrcode');
+
+            if (!gender || !category || !size) {
+                badge.textContent = "Выберите все параметры выше";
+                qtyVal.textContent = "-- ед.";
+                updateInfo.textContent = "Статус: ожидает выбора параметров";
+                qrContainer.innerHTML = '<span class="text-[10px] text-gray-400 text-center">QR-код</span>';
+                return;
+            }
+
+            badge.textContent = `${gender.toUpperCase()} • ${category} • ${size}`;
 
             const data = await loadInventoryData();
             let qty = 0;
-            let updated = "Нет данных";
+            let updated = "Нет данных в системе";
 
             if (data[gender] && data[gender][category] && data[gender][category][size]) {
                 qty = data[gender][category][size].qty || 0;
                 updated = data[gender][category][size].updated || "Не указано";
             }
 
-            document.getElementById('stockQuantityValue').textContent = `${qty} ед.`;
-            document.getElementById('stockUpdateInfo').textContent = `Последнее обновление данных: ${updated}`;
+            qtyVal.textContent = `${qty} ед.`;
+            updateInfo.textContent = `Последнее обновление данных: ${updated}`;
 
-            // Генерация QR-кода под текущий запрос
-            const qrContainer = document.getElementById('qrcode');
+            // Генерация QR-кода под выбранный товар
             qrContainer.innerHTML = '';
             const qrText = `ПЧ13-СКЛАД|${gender}|${category}|${size}|Остаток:${qty}`;
             new QRCode(qrContainer, {
@@ -292,11 +331,6 @@
                 correctLevel : QRCode.CorrectLevel.M
             });
         }
-
-        // Автозапуск при загрузке
-        window.addEventListener('DOMContentLoaded', () => {
-            updateStockView();
-        });
 
         // Движение поезда
         function updateTrainPosition() {
