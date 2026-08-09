@@ -28,7 +28,7 @@
         #dropdownMenu.open { max-height: 700px; opacity: 1; transform: translateY(0); pointer-events: auto; }
         .rail-track-pattern {
             background: repeating-linear-gradient(90deg, #64748B 0px, #64748B 3px, transparent 3px, transparent 18px);
-            border-top: 2px solid #475569; border-bottom: 2px solid #334155;
+            border-top: 2px solid #374151; border-bottom: 2px solid #374151;
         }
         #train-container { will-change: transform; transition: transform 0.1s cubic-bezier(0.25, 1, 0.5, 1); }
         @keyframes wheel-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
@@ -85,9 +85,9 @@
     <main class="flex-grow max-w-4xl w-full mx-auto p-4 md:p-6 space-y-6">
         <nav class="flex items-center justify-between text-sm text-gray-600">
             <a href="warehouse-stock.html" class="text-rzd-red hover:underline font-medium flex items-center">
-                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> На к просмотру наличия
+                <i data-lucide="arrow-left" class="w-4 h-4 mr-1"></i> К просмотру наличия
             </a>
-            <span class="px-2.5 py-1 bg-red-100 text-rzd-red font-bold text-xs rounded-full">Режим кладовщика (Пароль принят)</span>
+            <span class="px-2.5 py-1 bg-red-100 text-rzd-red font-bold text-xs rounded-full">Панель управления кладовщика</span>
         </nav>
 
         <section class="bg-white p-6 rounded-xl shadow-md border-t-4 border-rzd-red space-y-6">
@@ -96,14 +96,15 @@
                     <i data-lucide="edit-3" class="w-6 h-6 mr-2 text-rzd-red"></i>
                     Введение данных поставок и учет остатков
                 </h2>
-                <p class="text-xs text-gray-500 mt-1">Изменяйте количество единиц на складе. При сохранении фиксируется точное время обновления.</p>
+                <p class="text-xs text-gray-500 mt-1">Выберите параметры позиции, проверьте текущий остаток и измените количество единиц.</p>
             </div>
 
-            <!-- Панель выбора категории для редактирования -->
+            <!-- Панель выбора категории (пустые при загрузке) -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-lg border">
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">1. Выберите пол:</label>
-                    <select id="adminGender" onchange="loadAdminForm()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                    <select id="adminGender" onchange="onFilterChange()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="" disabled selected>-- Выберите пол --</option>
                         <option value="мужской">Мужской</option>
                         <option value="женский">Женский</option>
                     </select>
@@ -111,60 +112,97 @@
 
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">2. Тип одежды / СИЗ:</label>
-                    <select id="adminCategory" onchange="loadAdminForm()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
-                        <option value="Костюм сигнальный">Костюм сигнальный</option>
-                        <option value="Ботинки защитные">Ботинки юфтевые / с защитным носком</option>
+                    <select id="adminCategory" onchange="onCategoryChange()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
+                        <option value="" disabled selected>-- Выберите тип --</option>
+                        <option value="Костюм летний">Костюм летний</option>
+                        <option value="Костюм зимний">Костюм зимний</option>
+                        <option value="Обувь летняя">Обувь летняя</option>
+                        <option value="Обувь зимняя">Обувь зимняя</option>
+                        <option value="Сапоги резиновые">Сапоги резиновые</option>
                         <option value="Каска защитная">Каска защитная</option>
-                        <option value="Перчатки / рукавицы">Перчатки / рукавицы</option>
-                        <option value="Плащ влагозащитный">Плащ влагозащитный</option>
+                        <option value="Очки защитные">Очки защитные</option>
+                        <option value="Плащ-дождевик">Плащ-дождевик</option>
+                        <option value="Костюм антимоскитный">Костюм антимоскитный</option>
                     </select>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">3. Размер:</label>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1.5">3. Размер / Ростовка:</label>
                     <select id="adminSize" onchange="loadAdminForm()" class="w-full p-2 bg-white border border-gray-300 rounded-lg text-sm font-medium focus:ring-2 focus:ring-rzd-red">
-                        <option value="44-46">44-46 (M)</option>
-                        <option value="48-50" selected>48-50 (L)</option>
-                        <option value="52-54">52-54 (XL)</option>
-                        <option value="56-58">56-58 (XXL)</option>
-                        <option value="Универсальный">Универсальный / 42-45</option>
+                        <option value="" disabled selected>-- Сначала выберите тип --</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Редактируемая форма -->
+            <!-- Редактируемая форма с окошком текущего количества -->
             <div class="p-6 bg-red-50/50 rounded-xl border-2 border-red-100 space-y-4">
                 <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
-                        <span id="adminItemBadge" class="px-2.5 py-1 bg-red-100 text-rzd-red text-xs font-bold rounded-full">Параметр позиции</span>
-                        <h3 class="font-bold text-lg text-gray-900 mt-2">Редактирование количества единиц</h3>
+                        <span id="adminItemBadge" class="px-2.5 py-1 bg-red-100 text-rzd-red text-xs font-bold rounded-full">Параметры не выбраны</span>
+                        <h3 class="font-bold text-lg text-gray-900 mt-2">Редактирование остатка на складе</h3>
                     </div>
-                    <div class="w-full sm:w-48">
-                        <label class="block text-[11px] font-semibold text-gray-600 mb-1">Количество на складе (ед.):</label>
-                        <input type="number" id="adminQuantityInput" min="0" 
-                               class="w-full px-3 py-2 bg-white border-2 border-rzd-red rounded-lg font-bold text-lg text-center text-gray-900 focus:outline-none shadow-sm">
+
+                    <div class="flex items-center gap-3">
+                        <!-- Окошко текущего количества в системе -->
+                        <div class="bg-white px-4 py-2 border border-gray-200 rounded-lg text-center shadow-sm">
+                            <span class="block text-[10px] text-gray-400 uppercase font-semibold">Текущий склад</span>
+                            <span id="currentStockDisplay" class="text-lg font-bold text-rzd-red">-- ед.</span>
+                        </div>
+
+                        <!-- Поле ввода нового количества -->
+                        <div class="w-36">
+                            <label class="block text-[11px] font-semibold text-gray-600 mb-1">Новое кол-во:</label>
+                            <input type="number" id="adminQuantityInput" min="0" placeholder="0" 
+                                   class="w-full px-3 py-2 bg-white border-2 border-rzd-red rounded-lg font-bold text-lg text-center text-gray-900 focus:outline-none shadow-sm">
+                        </div>
                     </div>
                 </div>
 
-                <div class="text-xs text-gray-500" id="adminLastUpdateText">Последнее изменение: не сохранялось</div>
+                <div class="text-xs text-gray-500" id="adminLastUpdateText">Последнее изменение: не выбрано</div>
 
                 <!-- Кнопки управления -->
                 <div class="flex items-center justify-end space-x-3 pt-4 border-t border-red-200">
                     <button onclick="cancelAdminEdit()" class="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-700 text-xs font-semibold rounded-lg transition">
                         Отменить
                     </button>
-                    <button onclick="saveAdminChanges()" class="px-5 py-2 bg-rzd-red hover:bg-rzd-darkRed text-white text-xs font-semibold rounded-lg shadow transition flex items-center">
+                    <button onclick="requestPasswordAndSave()" class="px-5 py-2 bg-rzd-red hover:bg-rzd-darkRed text-white text-xs font-semibold rounded-lg shadow transition flex items-center">
                         <i data-lucide="save" class="w-4 h-4 mr-1.5"></i> Сохранить изменения
                     </button>
                 </div>
             </div>
             
-            <!-- Уведомление об успешном сохранении -->
             <div id="successNotification" class="hidden p-3 bg-green-100 border border-green-300 text-green-800 text-xs font-semibold rounded-lg text-center transition">
                 ✅ Данные успешно сохранены и зафиксированы в системе!
             </div>
         </section>
     </main>
+
+    <!-- Модальное окно запроса пароля при сохранении (пароль: 2026) -->
+    <div id="savePasswordModal" class="hidden fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-sm w-full p-6 space-y-4 border-t-4 border-rzd-red animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-base text-gray-900 flex items-center">
+                    <i data-lucide="lock" class="w-5 h-5 mr-2 text-rzd-red"></i>
+                    Подтвердите сохранение
+                </h3>
+                <button onclick="closeSavePasswordModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs text-gray-600">Для сохранения изменений введите пароль кладовщика:</p>
+            
+            <div>
+                <input type="password" id="confirmPasswordInput" placeholder="Пароль (2026)" 
+                       class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-rzd-red">
+                <p id="savePasswordError" class="hidden text-[11px] text-red-600 font-semibold mt-1">Неверный пароль! (требуется: 2026).</p>
+            </div>
+
+            <div class="flex items-center justify-end space-x-2 pt-2">
+                <button onclick="closeSavePasswordModal()" class="px-3 py-1.5 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition">Отмена</button>
+                <button onclick="verifyAndExecuteSave()" class="px-4 py-1.5 bg-rzd-red hover:bg-rzd-darkRed text-white text-xs font-semibold rounded-lg shadow transition">Подтвердить</button>
+            </div>
+        </div>
+    </div>
 
     <!-- Подвал сайта -->
     <footer class="bg-rzd-gray text-white text-xs py-6 relative border-t-4 border-rzd-red mb-10">
@@ -223,7 +261,7 @@
         </div>
     </div>
 
-    <!-- Скрипты админ-панели -->
+    <!-- Скрипты админ-панели с динамической сеткой размеров -->
     <script>
         lucide.createIcons();
 
@@ -239,64 +277,128 @@
             }
         });
 
-        // Загрузка инвентаря
         async function loadInventoryData() {
             try {
                 const response = await fetch('inventory.json');
-                if (!response.ok) throw new Error('Файл не найден');
+                if (!response.ok) throw new Error();
                 const text = await response.text();
-                if (!text.trim()) return getDefaultInventory();
+                if (!text.trim()) return {};
                 return JSON.parse(text);
             } catch (err) {
-                return getDefaultInventory();
+                const cached = localStorage.getItem('rzd_inventory_cache');
+                return cached ? JSON.parse(cached) : {};
             }
         }
 
-        function getDefaultInventory() {
-            return {
-                "мужской": {
-                    "Костюм сигнальный": { "44-46": {qty: 15, updated: "01.08.2026 10:00"}, "48-50": {qty: 24, updated: "01.08.2026 10:00"}, "52-54": {qty: 10, updated: "01.08.2026 10:00"}, "56-58": {qty: 5, updated: "01.08.2026 10:00"} },
-                    "Ботинки защитные": { "44-46": {qty: 8, updated: "02.08.2026 11:30"}, "48-50": {qty: 18, updated: "02.08.2026 11:30"}, "52-54": {qty: 12, updated: "02.08.2026 11:30"}, "56-58": {qty: 4, updated: "02.08.2026 11:30"} },
-                    "Каска защитная": { "Универсальный": {qty: 45, updated: "03.08.2026 09:15"} },
-                    "Перчатки / рукавицы": { "Универсальный": {qty: 150, updated: "03.08.2026 09:15"} },
-                    "Плащ влагозащитный": { "48-50": {qty: 7, updated: "03.08.2026 09:15"}, "52-54": {qty: 9, updated: "03.08.2026 09:15"} }
-                },
-                "женский": {
-                    "Костюм сигнальный": { "44-46": {qty: 12, updated: "01.08.2026 10:00"}, "48-50": {qty: 14, updated: "01.08.2026 10:00"} },
-                    "Ботинки защитные": { "44-46": {qty: 6, updated: "02.08.2026 11:30"}, "48-50": {qty: 8, updated: "02.08.2026 11:30"} },
-                    "Каска защитная": { "Универсальный": {qty: 20, updated: "03.08.2026 09:15"} },
-                    "Перчатки / рукавицы": { "Универсальный": {qty: 80, updated: "03.08.2026 09:15"} },
-                    "Плащ влагозащитный": { "44-46": {qty: 5, updated: "03.08.2026 09:15"} }
+        let currentInventory = {};
+
+        // Генерация списков размеров по типу одежды/обуви
+        function onCategoryChange() {
+            const category = document.getElementById('adminCategory').value;
+            const sizeSelect = document.getElementById('adminSize');
+            sizeSelect.innerHTML = '';
+
+            let sizesList = [];
+
+            if (category.includes('обувь') || category.includes('Сапоги')) {
+                // Размеры обуви от 36 до 48
+                for (let i = 36; i <= 48; i++) {
+                    sizesList.push(String(i));
                 }
-            };
+            } else if (category.includes('каска') || category.includes('очки')) {
+                // Универсальные
+                sizesList.push('Универсальный');
+            } else {
+                // Российская сетка одежды: размеры от 80-86 до 126-132, ростовки от 156-162 до 204-210, шаг 6
+                const rusSizes = ['80-86', '88-94', '96-102', '104-110', '112-118', '120-126', '128-134'];
+                const heights = ['156-162', '164-170', '172-178', '180-186', '188-194', '196-202', '204-210'];
+                
+                rusSizes.forEach(sz => {
+                    heights.forEach(ht => {
+                        sizesList.push(`${sz} / ${ht}`);
+                    });
+                });
+            }
+
+            sizeSelect.innerHTML = `<option value="" disabled selected>-- Выберите размер --</option>`;
+            sizesList.forEach(s => {
+                const opt = document.createElement('option');
+                opt.value = s;
+                opt.textContent = s;
+                sizeSelect.appendChild(opt);
+            });
+
+            loadAdminForm();
         }
 
-        let currentInventory = {};
+        function onFilterChange() {
+            loadAdminForm();
+        }
 
         async function loadAdminForm() {
             const gender = document.getElementById('adminGender').value;
             const category = document.getElementById('adminCategory').value;
             const size = document.getElementById('adminSize').value;
 
-            document.getElementById('adminItemBadge').textContent = `${gender.toUpperCase()} • ${category} • ${size}`;
-
             if (Object.keys(currentInventory).length === 0) {
                 currentInventory = await loadInventoryData();
             }
 
+            if (!gender || !category || !size) {
+                document.getElementById('adminItemBadge').textContent = "Параметры не выбраны";
+                document.getElementById('currentStockDisplay').textContent = "-- ед.";
+                document.getElementById('adminQuantityInput').value = "";
+                document.getElementById('adminLastUpdateText').textContent = "Последнее изменение: не выбрано";
+                return;
+            }
+
+            document.getElementById('adminItemBadge').textContent = `${gender.toUpperCase()} • ${category} • Размер: ${size}`;
+
             let qty = 0;
-            let updated = "Еще не обновлялось";
+            let updated = "Нет данных в системе";
 
             if (currentInventory[gender] && currentInventory[gender][category] && currentInventory[gender][category][size]) {
                 qty = currentInventory[gender][category][size].qty || 0;
                 updated = currentInventory[gender][category][size].updated || "Не указано";
             }
 
+            document.getElementById('currentStockDisplay').textContent = `${qty} ед.`;
             document.getElementById('adminQuantityInput').value = qty;
             document.getElementById('adminLastUpdateText').textContent = `Последнее изменение: ${updated}`;
         }
 
-        async function saveAdminChanges() {
+        // Запрос пароля при нажатии на сохранение
+        function requestPasswordAndSave() {
+            const gender = document.getElementById('adminGender').value;
+            const category = document.getElementById('adminCategory').value;
+            const size = document.getElementById('adminSize').value;
+
+            if (!gender || !category || !size) {
+                alert('Пожалуйста, выберите пол, тип одежды и размер перед сохранением!');
+                return;
+            }
+
+            document.getElementById('savePasswordModal').classList.remove('hidden');
+            document.getElementById('confirmPasswordInput').value = '';
+            document.getElementById('savePasswordError').classList.add('hidden');
+            document.getElementById('confirmPasswordInput').focus();
+        }
+
+        function closeSavePasswordModal() {
+            document.getElementById('savePasswordModal').classList.add('hidden');
+        }
+
+        function verifyAndExecuteSave() {
+            const pwd = document.getElementById('confirmPasswordInput').value;
+            if (pwd === '2026') {
+                closeSavePasswordModal();
+                executeDataSave();
+            } else {
+                document.getElementById('savePasswordError').classList.remove('hidden');
+            }
+        }
+
+        function executeDataSave() {
             const gender = document.getElementById('adminGender').value;
             const category = document.getElementById('adminCategory').value;
             const size = document.getElementById('adminSize').value;
@@ -305,7 +407,6 @@
             if (!currentInventory[gender]) currentInventory[gender] = {};
             if (!currentInventory[gender][category]) currentInventory[gender][category] = {};
 
-            // Формируем красивую дату и время сохранения
             const now = new Date();
             const dateStr = String(now.getDate()).padStart(2, '0') + '.' + String(now.getMonth() + 1).padStart(2, '0') + '.' + now.getFullYear();
             const timeStr = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
@@ -316,15 +417,13 @@
                 updated: fullDateTime
             };
 
+            document.getElementById('currentStockDisplay').textContent = `${newQty} ед.`;
             document.getElementById('adminLastUpdateText').textContent = `Последнее изменение: ${fullDateTime}`;
             
-            // Уведомление
             const notif = document.getElementById('successNotification');
             notif.classList.remove('hidden');
-            setTimeout(() => notif.classList.add('hidden'), 3000);
+            setTimeout(() => notif.classList.add('hidden'), 3500);
 
-            // В реальной среде здесь может быть отправка POST-запроса на сервер для перезаписи inventory.json.
-            // Для работы внутри статического сайта сохраняем также в localStorage для мгновенной синхронизации со страницей наличия.
             localStorage.setItem('rzd_inventory_cache', JSON.stringify(currentInventory));
         }
 
@@ -333,12 +432,10 @@
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Проверка кэша из localStorage если кладовщик уже сохранял до этого
             const cached = localStorage.getItem('rzd_inventory_cache');
             if (cached) {
                 try { currentInventory = JSON.parse(cached); } catch(e){}
             }
-            loadAdminForm();
         });
 
         // Движение поезда
