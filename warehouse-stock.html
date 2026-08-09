@@ -20,7 +20,7 @@
     <script src="https://unpkg.com/lucide@latest"></script>
     <!-- Библиотека генерации QR-кодов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <!-- Библиотека html2canvas для сохранения карточки с QR в картинку -->
+    <!-- Библиотека html2canvas для преобразования карточки в картинку -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         .rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }
@@ -156,13 +156,44 @@
                         <div class="text-[9px] text-gray-400 mt-0.5">Уголок охраны труда</div>
                     </div>
 
-                    <button id="printQrBtn" onclick="downloadQrCard()" disabled class="w-full py-2 px-3 bg-gray-200 text-gray-400 font-semibold text-xs rounded-lg transition flex items-center justify-center cursor-not-allowed">
+                    <button id="printQrBtn" onclick="prepareQrModal()" disabled class="w-full py-2 px-3 bg-gray-200 text-gray-400 font-semibold text-xs rounded-lg transition flex items-center justify-center cursor-not-allowed">
                         <i data-lucide="printer" class="w-4 h-4 mr-1.5"></i> Сохранить / Распечатать QR
                     </button>
                 </div>
             </div>
         </section>
     </main>
+
+    <!-- Модальное окно для мобильных и ПК с готовой картинкой QR-кода -->
+    <div id="qrModal" class="hidden fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 space-y-4 text-center animate-in fade-in zoom-in duration-200">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 class="font-bold text-sm text-gray-900 flex items-center">
+                    <i data-lucide="qr-code" class="w-4 h-4 mr-1.5 text-rzd-red"></i>
+                    Готовый QR-код для печати
+                </h3>
+                <button onclick="closeQrModal()" class="text-gray-400 hover:text-gray-600">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            
+            <p class="text-xs text-gray-600">На телефоне: <b>зажмите картинку пальцем</b> и выберите «Сохранить в фото». На ПК: нажмите кнопку ниже.</p>
+
+            <!-- Контейнер куда рендерится картинка -->
+            <div id="modalCanvasContainer" class="flex justify-center p-2 bg-gray-50 border rounded-xl shadow-inner overflow-hidden">
+                <!-- Сюда вставляется готовый canvas или изображение -->
+            </div>
+
+            <div class="flex items-center justify-between pt-2 gap-2">
+                <button onclick="closeQrModal()" class="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold rounded-lg transition">
+                    Закрыть
+                </button>
+                <a id="downloadQrLink" href="#" download="QR_РЖД_СИЗ.png" class="w-full py-2 bg-rzd-red hover:bg-rzd-darkRed text-white text-xs font-semibold rounded-lg shadow transition flex items-center justify-center">
+                    <i data-lucide="download" class="w-3.5 h-3.5 mr-1"></i> Скачать файл
+                </a>
+            </div>
+        </div>
+    </div>
 
     <footer class="bg-rzd-gray text-white text-xs py-6 relative border-t-4 border-rzd-red mb-10">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
@@ -372,17 +403,33 @@
             printBtn.className = "w-full py-2 px-3 bg-rzd-red hover:bg-rzd-darkRed text-white font-semibold text-xs rounded-lg shadow transition flex items-center justify-center cursor-pointer";
         }
 
-        // Исправленная функция скачивания через html2canvas с небольшой задержкой рендеринга
-        function downloadQrCard() {
+        // Мобильное решение: рендерим карточку в модальное окно с инструкцией "Зажмите и сохраните"
+        function prepareQrModal() {
             const cardElement = document.getElementById('printableQrCard');
+            const modal = document.getElementById('qrModal');
+            const container = document.getElementById('modalCanvasContainer');
+            const downloadLink = document.getElementById('downloadQrLink');
+
+            container.innerHTML = '<p class="text-xs text-gray-500 py-6">Подготовка изображения...</p>';
+            modal.classList.remove('hidden');
+
             setTimeout(() => {
                 html2canvas(cardElement, { scale: 3, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
-                    const link = document.createElement('a');
-                    link.download = `QR_РЖД_СИЗ_${document.getElementById('filterCategory').value}_${document.getElementById('filterSize').value}.png`.replace(/\s+/g, '_');
-                    link.href = canvas.toDataURL('image/png');
-                    link.click();
+                    container.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = canvas.toDataURL('image/png');
+                    img.className = "rounded-lg shadow max-h-64 object-contain";
+                    container.appendChild(img);
+
+                    const fileName = `QR_РЖД_СИЗ_${document.getElementById('filterCategory').value}_${document.getElementById('filterSize').value}.png`.replace(/\s+/g, '_');
+                    downloadLink.href = img.src;
+                    downloadLink.download = fileName;
                 });
-            }, 100);
+            }, 150);
+        }
+
+        function closeQrModal() {
+            document.getElementById('qrModal').classList.add('hidden');
         }
 
         window.addEventListener('DOMContentLoaded', async () => {
