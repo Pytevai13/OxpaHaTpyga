@@ -145,7 +145,6 @@
                     <p class="text-xs text-gray-600" id="stockUpdateInfo">Статус: ожидает выбора параметров</p>
                 </div>
 
-                <!-- Блок с QR-кодом и кнопкой печати -->
                 <div class="flex flex-col items-center space-y-3 shrink-0">
                     <!-- Печатная карточка с QR в стиле РЖД -->
                     <div id="printableQrCard" class="bg-white p-4 rounded-xl border-2 border-rzd-red shadow-sm flex flex-col items-center text-center w-48">
@@ -356,7 +355,6 @@
             qtyVal.textContent = `${qty} ед.`;
             updateInfo.textContent = `Последнее обновление данных: ${updated}`;
 
-            // Генерация QR-кода со ссылкой для автоматического заполнения параметров при сканировании
             qrContainer.innerHTML = '';
             const currentUrl = window.location.href.split('?')[0];
             const scanLink = `${currentUrl}?gender=${encodeURIComponent(targetKey)}&category=${encodeURIComponent(category)}&size=${encodeURIComponent(size)}`;
@@ -374,18 +372,19 @@
             printBtn.className = "w-full py-2 px-3 bg-rzd-red hover:bg-rzd-darkRed text-white font-semibold text-xs rounded-lg shadow transition flex items-center justify-center cursor-pointer";
         }
 
-        // Функция сохранения/печати QR-карточки в стиле РЖД
+        // Исправленная функция скачивания через html2canvas с небольшой задержкой рендеринга
         function downloadQrCard() {
             const cardElement = document.getElementById('printableQrCard');
-            html2canvas(cardElement, { scale: 3, backgroundColor: '#ffffff' }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = `QR_РЖД_СИЗ_${document.getElementById('filterCategory').value}_${document.getElementById('filterSize').value}.png`;
-                link.href = canvas.toDataURL('image/png');
-                link.link.click();
-            });
+            setTimeout(() => {
+                html2canvas(cardElement, { scale: 3, backgroundColor: '#ffffff', useCORS: true }).then(canvas => {
+                    const link = document.createElement('a');
+                    link.download = `QR_РЖД_СИЗ_${document.getElementById('filterCategory').value}_${document.getElementById('filterSize').value}.png`.replace(/\s+/g, '_');
+                    link.href = canvas.toDataURL('image/png');
+                    link.click();
+                });
+            }, 100);
         }
 
-        // Авто-заполнение параметров при сканировании QR-кода (если в url есть параметры)
         window.addEventListener('DOMContentLoaded', async () => {
             const params = new URLSearchParams(window.location.search);
             const g = params.get('gender');
