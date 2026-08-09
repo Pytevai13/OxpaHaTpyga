@@ -18,7 +18,6 @@
         }
     </script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Библиотека генерации QR-кодов -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
     <style>
         .rzd-top-bar { background: linear-gradient(90deg, #E21A1A 0%, #B81414 100%); }
@@ -39,7 +38,6 @@
 </head>
 <body class="bg-rzd-lightGray text-gray-800 font-sans min-h-screen flex flex-col antialiased overflow-x-hidden pb-20">
 
-    <!-- Шапка сайта -->
     <header class="rzd-top-bar text-white shadow-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2 sm:gap-3">
             <div class="flex items-center justify-between w-full md:w-auto">
@@ -83,7 +81,6 @@
         </div>
     </header>
 
-    <!-- Основной контент -->
     <main class="flex-grow max-w-4xl w-full mx-auto p-4 md:p-6 space-y-6">
         <nav class="flex items-center space-x-2 text-sm text-gray-600">
             <a href="siz.html" class="text-rzd-red hover:underline font-medium flex items-center">
@@ -105,7 +102,6 @@
                 </a>
             </div>
 
-            <!-- Панель фильтров (пустые при загрузке) -->
             <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 bg-gray-50 p-4 rounded-lg border">
                 <div>
                     <label class="block text-xs font-semibold text-gray-700 mb-1.5">1. Выберите пол:</label>
@@ -140,7 +136,6 @@
                 </div>
             </div>
 
-            <!-- Информационная карточка результата -->
             <div id="stockResultCard" class="p-6 bg-red-50/50 rounded-xl border-2 border-red-100 flex flex-col md:flex-row items-center justify-between gap-6">
                 <div class="space-y-2 text-center md:text-left flex-1">
                     <span id="itemTitleBadge" class="px-2.5 py-1 bg-red-100 text-rzd-red text-xs font-bold rounded-full">Выберите параметры выше</span>
@@ -148,7 +143,6 @@
                     <p class="text-xs text-gray-600" id="stockUpdateInfo">Статус: ожидает выбора параметров</p>
                 </div>
 
-                <!-- Блок с QR-кодом -->
                 <div class="flex flex-col items-center bg-white p-3 rounded-lg shadow-sm border shrink-0">
                     <div id="qrcode" class="w-28 h-28 flex items-center justify-center">
                         <span class="text-[10px] text-gray-400 text-center">QR-код</span>
@@ -159,7 +153,6 @@
         </section>
     </main>
 
-    <!-- Подвал сайта -->
     <footer class="bg-rzd-gray text-white text-xs py-6 relative border-t-4 border-rzd-red mb-10">
         <div class="max-w-7xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
             <div>
@@ -173,7 +166,6 @@
         </div>
     </footer>
 
-    <!-- Поезд РЖД Премиум внизу страницы -->
     <div class="fixed bottom-0 left-0 w-full bg-slate-900/85 backdrop-blur-md overflow-hidden h-14 flex items-end border-t border-red-600/40 shadow-2xl z-40">
         <div class="rail-track-pattern absolute bottom-1 left-0 w-full h-2.5 z-0 opacity-80"></div>
         <div id="train-container" class="absolute bottom-1.5 left-0 z-10 flex items-end">
@@ -192,14 +184,6 @@
                     <rect x="114" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="120" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="120" y1="32.5" x2="120" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="144" cy="37" r="4.5" fill="#0F172A" stroke="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="144" y1="32.5" x2="144" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
                 </g>
                 <rect x="170" y="16" width="10" height="17" rx="1" fill="#1E293B"/><line x1="173" y1="16" x2="173" y2="33" stroke="#475569" stroke-width="1"/><line x1="177" y1="16" x2="177" y2="33" stroke="#475569" stroke-width="1"/>
-                <g id="car1">
-                    <rect x="180" y="14" width="180" height="20" rx="4" fill="url(#bodyGrad)"/><path d="M 180 21 L 360 21 L 360 29.5 L 180 29.5 Z" fill="url(#rzdRedGrad)"/><path d="M 180 14 L 235 14 L 215 21 L 180 21 Z" fill="url(#rzdRedGrad)"/>
-                    <text x="270" y="27.5" font-family="Arial, sans-serif" font-size="7.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" letter-spacing="1.5">РЖД</text>
-                    <rect x="235" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/><rect x="259" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/><rect x="295" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/><rect x="319" y="16" width="18" height="4.5" rx="1" fill="url(#glassGrad)"/>
-                    <rect x="194" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="200" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="200" y1="32.5" x2="200" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="224" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="224" y1="32.5" x2="224" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
-                    <rect x="314" y="32" width="36" height="3" fill="#1E293B" rx="1"/><g class="wheel-rotate"><circle cx="320" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="320" y1="32.5" x2="320" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g><g class="wheel-rotate"><circle cx="344" cy="37" r="4.5" fill="#0F172A" stroke="#94A3B8" stroke-width="1.5"/><line x1="344" y1="32.5" x2="344" y2="41.5" stroke="#94A3B8" stroke-width="1"/></g>
-                </g>
-                <rect x="360" y="16" width="10" height="17" rx="1" fill="#1E293B"/><line x1="363" y1="16" x2="363" y2="33" stroke="#475569" stroke-width="1"/><line x1="367" y1="16" x2="367" y2="33" stroke="#475569" stroke-width="1"/>
                 <g id="headLocomotive">
                     <path d="M 370 34 L 370 12 C 370 12, 530 10, 560 14 C 585 18, 600 24, 605 34 Z" fill="url(#bodyGrad)"/><path d="M 440 11.5 C 500 11.5, 545 13, 570 18 C 590 22, 602 27, 605 34 L 440 34 Z" fill="url(#rzdRedGrad)"/><path d="M 525 12 C 555 13, 580 18, 595 24 L 590 27 C 575 22, 550 17, 520 16 Z" fill="#FFFFFF"/>
                     <text x="480" y="24" font-family="Arial, sans-serif" font-size="7" font-weight="900" fill="#FFFFFF" letter-spacing="1">РЖД</text>
@@ -216,7 +200,6 @@
         </div>
     </div>
 
-    <!-- Скрипты складской проверки -->
     <script>
         lucide.createIcons();
 
@@ -234,7 +217,6 @@
 
         async function loadInventoryData() {
             try {
-                // Сначала проверяем локальный кэш (если кладовщик только что сохранил изменения)
                 const cached = localStorage.getItem('rzd_inventory_cache');
                 if (cached) {
                     return JSON.parse(cached);
@@ -250,17 +232,18 @@
         }
 
         function onStockCategoryChange() {
-            const category = document.getElementById('filterCategory').value;
+            const category = document.getElementById('filterCategory').value.toLowerCase();
             const sizeSelect = document.getElementById('filterSize');
             sizeSelect.innerHTML = '<option value="" disabled selected>-- Выберите размер --</option>';
 
             let sizesList = [];
 
-            if (category.includes('обувь') || category.includes('Сапоги')) {
+            // Проверяем наличие слова "обувь" или "сапоги" в любом регистре
+            if (category.includes('обувь') || category.includes('сапоги')) {
                 for (let i = 36; i <= 48; i++) {
                     sizesList.push(String(i));
                 }
-            } else if (category.includes('Каска') || category.includes('Очки')) {
+            } else if (category.includes('каска') || category.includes('очки')) {
                 sizesList.push('Универсальный');
             } else {
                 const rusSizes = ['80-86', '88-94', '96-102', '104-110', '112-118', '120-126', '128-134'];
@@ -319,7 +302,6 @@
             qtyVal.textContent = `${qty} ед.`;
             updateInfo.textContent = `Последнее обновление данных: ${updated}`;
 
-            // Генерация QR-кода под выбранный товар
             qrContainer.innerHTML = '';
             const qrText = `ПЧ13-СКЛАД|${gender}|${category}|${size}|Остаток:${qty}`;
             new QRCode(qrContainer, {
@@ -332,7 +314,6 @@
             });
         }
 
-        // Движение поезда
         function updateTrainPosition() {
             const train = document.getElementById('train-container');
             if (!train) return;
